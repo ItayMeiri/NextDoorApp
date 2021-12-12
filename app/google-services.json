@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "63250163895",
+    "firebase_url": "https://next-door-466cd-default-rtdb.firebaseio.com",
+    "project_id": "next-door-466cd",
+    "storage_bucket": "next-door-466cd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:63250163895:android:c739e15c6f35e44c4f4532",
+        "android_client_info": {
+          "package_name": "com.app.nextdoor"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "63250163895-j7ifnl9frhdsjpvlfq1eb4q6b0lb4i67.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDypVMyLMr75Zz41KoMGgWYQqINj82eywI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "63250163895-j7ifnl9frhdsjpvlfq1eb4q6b0lb4i67.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
