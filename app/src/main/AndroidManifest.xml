@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.NextDoor">
         <activity
-            android:name=".RegisterActicity"
+            android:name=".RegistrationActivity"
             android:exported="false" />
         <activity
             android:name=".HomePageActivity"
