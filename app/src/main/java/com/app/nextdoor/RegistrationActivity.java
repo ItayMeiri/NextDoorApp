@@ -1,4 +1,5 @@
 package com.app.nextdoor;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -16,44 +17,52 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-        import com.google.firebase.auth.FirebaseUser;
 
-public class LoginActivity extends AppCompatActivity {
+import java.util.regex.Pattern;
+
+public class RegistrationActivity extends AppCompatActivity {
     EditText Email, Password;
-    Button SighIn;
-    TextView SighUp;
+    EditText FullName;
+    EditText PhoneNumber;
+    EditText Address;
+    Button SighUp;
+    TextView SighIn;
     FirebaseAuth myAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_registration);
 
-        Email = findViewById(R.id.Email1);
-        Password = findViewById(R.id.Password1);
-        SighIn = findViewById(R.id.button1);
-        SighUp = findViewById(R.id.textView1);
+        // Initialize
+        Email = findViewById(R.id.Email2);
+        Password = findViewById(R.id.Password2);
+        FullName = findViewById(R.id.FullName);
+        PhoneNumber = findViewById(R.id.PhoneNumber);
+        Address = findViewById(R.id.Address);
+        SighUp = findViewById(R.id.button2);
+        SighIn = findViewById(R.id.textView2);
         myAuth = FirebaseAuth.getInstance();
-
-        SighIn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Login();
-            }
-        });
 
         SighUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(LoginActivity.this, RegistrationActivity.class);
+                Register();
+            }
+        });
+
+        SighIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(RegistrationActivity.this,LoginActivity.class);
                 startActivity(i);
             }
         });
     }
 
-    private void Validation(String email, String password){
+    private void Validation(String email,String password){
         if (TextUtils.isEmpty(email)){
-            Email.setError("Please enter your Email address");
+            Email.setError("Please enter your email address");
         }
         else if (TextUtils.isEmpty(password)){
             Password.setError("Please enter your password");
@@ -63,22 +72,21 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private void Login(){
+    private void Register(){
         String email = Email.getText().toString();
         String password = Password.getText().toString();
         Validation(email,password);
-        myAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        myAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
-                    Intent i = new Intent(LoginActivity.this,HomePageActivity.class);
+                    Intent i = new Intent(RegistrationActivity.this,HomePageActivity.class);
                     startActivity(i);
                 }
                 else {
-                    Toast.makeText(LoginActivity.this,"Login failed",Toast.LENGTH_LONG).show();
+                    Toast.makeText(RegistrationActivity.this,"Registration field",Toast.LENGTH_LONG).show();
                 }
             }
         });
     }
-
 }
