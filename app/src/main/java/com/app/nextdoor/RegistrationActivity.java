@@ -118,6 +118,7 @@ public class RegistrationActivity extends AppCompatActivity {
                     userType="Business";
                 }
                 Register();
+
             }
         });
 
@@ -140,7 +141,11 @@ public class RegistrationActivity extends AppCompatActivity {
         else if (!(TextUtils.isEmpty(email)) && !(Patterns.EMAIL_ADDRESS.matcher(email).matches())){
             Email.setError("Please enter valid Email address");
         }
-    }
+        else if (!(Regular.isChecked())&&!(Business.isChecked())) {
+            Regular.setError("Please choose account type");
+
+        }
+        }
 
 
     private void addToDatabase(String userType){
