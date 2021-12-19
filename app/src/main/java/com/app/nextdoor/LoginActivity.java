@@ -25,7 +25,6 @@ public class LoginActivity extends AppCompatActivity {
     Button SignIn;
     TextView SignUp;
     FirebaseAuth myAuth;
-    SharedPreferences pref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
