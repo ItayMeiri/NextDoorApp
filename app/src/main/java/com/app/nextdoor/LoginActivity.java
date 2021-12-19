@@ -3,7 +3,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Patterns;
 import android.view.View;
@@ -20,9 +22,10 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class LoginActivity extends AppCompatActivity {
     EditText Email, Password;
-    Button SighIn;
-    TextView SighUp;
+    Button SignIn;
+    TextView SignUp;
     FirebaseAuth myAuth;
+    SharedPreferences pref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,18 +34,18 @@ public class LoginActivity extends AppCompatActivity {
 
         Email = findViewById(R.id.Email1);
         Password = findViewById(R.id.Password1);
-        SighIn = findViewById(R.id.button1);
-        SighUp = findViewById(R.id.textView1);
+        SignIn = findViewById(R.id.button1);
+        SignUp = findViewById(R.id.textView1);
         myAuth = FirebaseAuth.getInstance();
 
-        SighIn.setOnClickListener(new View.OnClickListener() {
+        SignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Login();
             }
         });
 
-        SighUp.setOnClickListener(new View.OnClickListener() {
+        SignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(LoginActivity.this, RegistrationActivity.class);

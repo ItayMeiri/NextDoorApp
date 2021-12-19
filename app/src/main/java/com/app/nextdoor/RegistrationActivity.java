@@ -9,7 +9,10 @@ import android.text.TextUtils;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,17 +20,73 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 public class RegistrationActivity extends AppCompatActivity {
+
+    public static class RegularProfile {
+        public String Address;
+        public String PhoneNumber;
+        public String FullName;
+        public String Job;
+        public List<String> Hobbies;
+
+        public RegularProfile(){
+
+        }
+
+        public RegularProfile(String A, String P, String F, String J, List<String> H){
+            Address=A;
+            PhoneNumber=P;
+            FullName=F;
+            Job=J;
+            Hobbies=H;
+        }
+
+    }
+
+    public static class BusinessProfile {
+
+        public String Address;
+        public String PhoneNumber;
+        public String FullName;
+        public String ServiceLang;
+        public String ActivityTime;
+        public String Description;
+
+
+        public BusinessProfile(){
+
+        }
+
+        public BusinessProfile(String A, String P, String F, String sL,String aT, String D){
+            Address=A;
+            PhoneNumber=P;
+            FullName=F;
+            ServiceLang=sL;
+            ActivityTime=aT;
+            Description=D;
+        }
+
+    }
+
     EditText Email, Password;
     EditText FullName;
     EditText PhoneNumber;
     EditText Address;
-    Button SighUp;
-    TextView SighIn;
+    Button SignUp;
+    TextView SignIn;
+    RadioGroup radioGroup;
+    RadioButton Regular;
+    RadioButton Business;
     FirebaseAuth myAuth;
+    String userType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,18 +99,29 @@ public class RegistrationActivity extends AppCompatActivity {
         FullName = findViewById(R.id.FullName);
         PhoneNumber = findViewById(R.id.PhoneNumber);
         Address = findViewById(R.id.Address);
-        SighUp = findViewById(R.id.button2);
-        SighIn = findViewById(R.id.textView2);
+        SignUp = findViewById(R.id.button2);
+        SignIn = findViewById(R.id.textView2);
+        radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
+        Regular = (RadioButton) findViewById(R.id.Regular);
+        Business = (RadioButton) findViewById(R.id.Business);
+        userType = "";
         myAuth = FirebaseAuth.getInstance();
 
-        SighUp.setOnClickListener(new View.OnClickListener() {
+
+        SignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (Regular.isChecked()){
+                    userType="Regular";
+                }
+                if (Business.isChecked()){
+                    userType="Business";
+                }
                 Register();
             }
         });
 
-        SighIn.setOnClickListener(new View.OnClickListener() {
+        SignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(RegistrationActivity.this,LoginActivity.class);
@@ -72,6 +142,20 @@ public class RegistrationActivity extends AppCompatActivity {
         }
     }
 
+
+    private void addToDatabase(String userType){
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference reference = database.getReference("users/"+ userType);
+        if (userType.equals("Regular")){
+            RegularProfile Rp = new RegularProfile(Address.getText().toString(), PhoneNumber.getText().toString(), FullName.getText().toString(), "", new ArrayList<String>());
+            reference.child(Objects.requireNonNull(myAuth.getUid())).setValue(Rp);
+        }
+        if (userType.equals("Business")){
+            BusinessProfile Bp = new BusinessProfile(Address.getText().toString(), PhoneNumber.getText().toString(), FullName.getText().toString(), "", "00:00 - 00:00","");
+            reference.child(Objects.requireNonNull(myAuth.getUid())).setValue(Bp);
+        }
+    }
+
     private void Register(){
         String email = Email.getText().toString();
         String password = Password.getText().toString();
@@ -80,11 +164,12 @@ public class RegistrationActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
+                    addToDatabase(userType);
                     Intent i = new Intent(RegistrationActivity.this,HomePageActivity.class);
                     startActivity(i);
                 }
                 else {
-                    Toast.makeText(RegistrationActivity.this,"Registration field",Toast.LENGTH_LONG).show();
+                    Toast.makeText(RegistrationActivity.this,"Registration failed",Toast.LENGTH_LONG).show();
                 }
             }
         });
