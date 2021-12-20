@@ -48,6 +48,11 @@ public class RegistrationActivity extends AppCompatActivity {
             Job=J;
             Hobbies=H;
         }
+        @NonNull
+        public String toString()
+        {
+            return "Name: " + FullName + "\nAddress:" + Address;
+        }
 
     }
 
