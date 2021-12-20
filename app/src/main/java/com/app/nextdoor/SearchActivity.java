@@ -1,14 +1,18 @@
 package com.app.nextdoor;
 
+import android.app.Application;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.ListView;
+import java.util.Base64;
 
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.DataSnapshot;
@@ -17,14 +21,18 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
-public class SearchActivity extends AppCompatActivity {
+public class SearchActivity extends AppCompatActivity{
 
     //instance variables
 
     String nameToSearch = "";
     String cityToSearch = "";
+    ArrayList<RegistrationActivity.RegularProfile> users;
+
     public void onClick(View v)
     {
         Log.i("buttonClick", "button is clicked");
@@ -57,6 +65,7 @@ public class SearchActivity extends AppCompatActivity {
     {
 
         ArrayList<String> listItems=new ArrayList<String>();
+        users = new ArrayList<>();
 //        listItems.add("test2");
 
 
@@ -69,7 +78,21 @@ public class SearchActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                setContentView(R.layout.profile_layout);
+
+                Intent intent = new Intent(SearchActivity.this,ProfileActivity.class);
+                RegistrationActivity.RegularProfile rp = users.get(i);
+                String serializedObject = "";
+                try {
+                    ByteArrayOutputStream bo = new ByteArrayOutputStream();
+                    ObjectOutputStream so = new ObjectOutputStream(bo);
+                    so.writeObject(rp);
+                    so.flush();
+                    serializedObject = new String(Base64.getEncoder().encode(bo.toByteArray()));
+                } catch (Exception e) {
+                    System.out.println(e);
+                }
+                intent.putExtra("Object", serializedObject);
+                startActivity(intent);
             }
         });
         ValueEventListener postListener = new ValueEventListener() {
@@ -82,10 +105,11 @@ public class SearchActivity extends AppCompatActivity {
                     RegistrationActivity.RegularProfile RP = snap.getValue(RegistrationActivity.RegularProfile.class);
                     if(RP.Address.contains(cityToSearch) && RP.FullName.contains(nameToSearch))
                     {
+//                        listItems.add(RP.toString());
+                        users.add(RP);
                         adapter.add(RP.toString());
                     }
 
-//                    System.out.println("snap: " + snap.toString());
                 }
             }
 
@@ -94,6 +118,7 @@ public class SearchActivity extends AppCompatActivity {
                 Log.w("1", "loadPost:onCancelled", databaseError.toException());
             }
         };
+
         ref.addValueEventListener(postListener);
     }
 

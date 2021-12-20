@@ -23,10 +23,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.io.Serializable;
+
 
 public class RegistrationActivity extends AppCompatActivity {
 
-    public static class RegularProfile {
+
+    public static class RegularProfile implements Serializable{
         public String Address;
         public String PhoneNumber;
         public String FullName;
