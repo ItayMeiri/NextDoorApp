@@ -35,19 +35,22 @@ public class RegistrationActivity extends AppCompatActivity {
         public String PhoneNumber;
         public String FullName;
         public String Job;
+        public List<String> Lang;
         public List<String> Hobbies;
 
         public RegularProfile(){
 
         }
 
-        public RegularProfile(String A, String P, String F, String J, List<String> H){
+        public RegularProfile(String A, String P, String F, String J,List<String> L, List<String> H){
             Address=A;
             PhoneNumber=P;
             FullName=F;
             Job=J;
+            Lang=L;
             Hobbies=H;
         }
+
         @NonNull
         public String toString()
         {
@@ -61,16 +64,15 @@ public class RegistrationActivity extends AppCompatActivity {
         public String Address;
         public String PhoneNumber;
         public String FullName;
-        public String ServiceLang;
+        public List<String> ServiceLang;
         public String ActivityTime;
         public String Description;
-
 
         public BusinessProfile(){
 
         }
 
-        public BusinessProfile(String A, String P, String F, String sL,String aT, String D){
+        public BusinessProfile(String A, String P, String F, List<String> sL,String aT, String D){
             Address=A;
             PhoneNumber=P;
             FullName=F;
@@ -123,7 +125,6 @@ public class RegistrationActivity extends AppCompatActivity {
                     userType="Business";
                 }
                 Register();
-
             }
         });
 
@@ -136,32 +137,48 @@ public class RegistrationActivity extends AppCompatActivity {
         });
     }
 
-    private void Validation(String email,String password){
-        if (TextUtils.isEmpty(email)){
+    private boolean Validation(String email,String password, String fullName, String address, String phoneNumber){
+        if (TextUtils.isEmpty(fullName)){
+            FullName.setError("Please enter your full Name");
+            return false;
+        }
+        else if (TextUtils.isEmpty(email)){
             Email.setError("Please enter your email address");
+            return false;
         }
         else if (TextUtils.isEmpty(password)){
             Password.setError("Please enter your password");
+            return false;
+        }
+        else if (TextUtils.isEmpty(address)){
+            Address.setError("Please enter your address");
+            return false;
+        }
+        else if(TextUtils.isEmpty(phoneNumber)){
+            PhoneNumber.setError("Please enter your phone number");
+            return false;
         }
         else if (!(TextUtils.isEmpty(email)) && !(Patterns.EMAIL_ADDRESS.matcher(email).matches())){
             Email.setError("Please enter valid Email address");
+            return false;
         }
         else if (!(Regular.isChecked())&&!(Business.isChecked())) {
-            Regular.setError("Please choose account type");
-
+            Toast.makeText(RegistrationActivity.this,"Please choose profile type",Toast.LENGTH_LONG).show();
+            return false;
         }
-        }
+        return true;
+    }
 
 
     private void addToDatabase(String userType){
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference reference = database.getReference("users/"+ userType);
         if (userType.equals("Regular")){
-            RegularProfile Rp = new RegularProfile(Address.getText().toString(), PhoneNumber.getText().toString(), FullName.getText().toString(), "", new ArrayList<String>());
+            RegularProfile Rp = new RegularProfile(Address.getText().toString(), PhoneNumber.getText().toString(), FullName.getText().toString(), "", new ArrayList<String>(),new ArrayList<String>());
             reference.child(Objects.requireNonNull(myAuth.getUid())).setValue(Rp);
         }
         if (userType.equals("Business")){
-            BusinessProfile Bp = new BusinessProfile(Address.getText().toString(), PhoneNumber.getText().toString(), FullName.getText().toString(), "", "00:00 - 00:00","");
+            BusinessProfile Bp = new BusinessProfile(Address.getText().toString(), PhoneNumber.getText().toString(), FullName.getText().toString(), new ArrayList<String>(), "00:00 - 00:00","");
             reference.child(Objects.requireNonNull(myAuth.getUid())).setValue(Bp);
         }
     }
@@ -169,19 +186,27 @@ public class RegistrationActivity extends AppCompatActivity {
     private void Register(){
         String email = Email.getText().toString();
         String password = Password.getText().toString();
-        Validation(email,password);
-        myAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful()){
-                    addToDatabase(userType);
-                    Intent i = new Intent(RegistrationActivity.this,HomePageActivity.class);
-                    startActivity(i);
+        String fullName = FullName.getText().toString();
+        String phoneNumber = PhoneNumber.getText().toString();
+        String address = Address.getText().toString();
+        if (Validation(email,password,fullName,address,phoneNumber)){
+            myAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    if(task.isSuccessful()){
+                        addToDatabase(userType);
+                        Intent i = new Intent(RegistrationActivity.this,HomePageActivity.class);
+                        startActivity(i);
+                    }
+                    else {
+                        Toast.makeText(RegistrationActivity.this,"Registration failed",Toast.LENGTH_LONG).show();
+                    }
                 }
-                else {
-                    Toast.makeText(RegistrationActivity.this,"Registration failed",Toast.LENGTH_LONG).show();
-                }
-            }
-        });
+            });
+        }
+        else {
+            Toast.makeText(RegistrationActivity.this,"Registration failed",Toast.LENGTH_LONG).show();
+        }
+
     }
 }

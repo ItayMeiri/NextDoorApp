@@ -53,34 +53,43 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void Validation(String email, String password){
+    private boolean Validation(String email, String password){
         if (TextUtils.isEmpty(email)){
             Email.setError("Please enter your Email address");
+            return false;
         }
         else if (TextUtils.isEmpty(password)){
             Password.setError("Please enter your password");
+            return false;
         }
         else if (!(TextUtils.isEmpty(email)) && !(Patterns.EMAIL_ADDRESS.matcher(email).matches())){
             Email.setError("Please enter valid Email address");
+            return false;
         }
+        return true;
     }
 
     private void Login(){
         String email = Email.getText().toString();
         String password = Password.getText().toString();
-        Validation(email,password);
-        myAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful()){
-                    Intent i = new Intent(LoginActivity.this,HomePageActivity.class);
-                    startActivity(i);
+        if (Validation(email,password)){
+            myAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    if(task.isSuccessful()){
+                        Intent i = new Intent(LoginActivity.this,HomePageActivity.class);
+                        startActivity(i);
+                    }
+                    else {
+                        Toast.makeText(LoginActivity.this,"Login failed",Toast.LENGTH_LONG).show();
+                    }
                 }
-                else {
-                    Toast.makeText(LoginActivity.this,"Login failed",Toast.LENGTH_LONG).show();
-                }
-            }
-        });
+            });
+        }
+        else {
+            Toast.makeText(LoginActivity.this,"Login failed",Toast.LENGTH_LONG).show();
+        }
+
     }
 
 }
