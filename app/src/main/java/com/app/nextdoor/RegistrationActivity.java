@@ -32,6 +32,7 @@ public class RegistrationActivity extends AppCompatActivity {
     public static class RegularProfile implements Serializable{
         public String Address;
         public String PhoneNumber;
+        public int Age;
         public String FullName;
         public String Job;
         public List<String> Lang;
@@ -41,9 +42,10 @@ public class RegistrationActivity extends AppCompatActivity {
 
         }
 
-        public RegularProfile(String A, String P, String F, String J,List<String> L, List<String> H){
+        public RegularProfile(String A, String P, int a, String F, String J,List<String> L, List<String> H){
             Address=A;
             PhoneNumber=P;
+            Age=a;
             FullName=F;
             Job=J;
             Lang=L;
@@ -173,7 +175,7 @@ public class RegistrationActivity extends AppCompatActivity {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference reference = database.getReference("users/"+ userType);
         if (userType.equals("Regular")){
-            RegularProfile Rp = new RegularProfile(Address.getText().toString(), PhoneNumber.getText().toString(), FullName.getText().toString(), "", new ArrayList<String>(),new ArrayList<String>());
+            RegularProfile Rp = new RegularProfile(Address.getText().toString(), PhoneNumber.getText().toString(),20, FullName.getText().toString(), "", new ArrayList<String>(),new ArrayList<String>());
             reference.child(Objects.requireNonNull(myAuth.getUid())).setValue(Rp);
         }
         if (userType.equals("Business")){

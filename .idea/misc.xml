@@ -3,16 +3,16 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/may74/AndroidStudioProjects/NextDoorApp/app/src/main/res/drawable/header_background.xml" value="0.26927083333333335" />
-        <entry key="..\:/Users/may74/AndroidStudioProjects/NextDoorApp/app/src/main/res/drawable/search_box.xml" value="0.1" />
-        <entry key="..\:/Users/may74/AndroidStudioProjects/NextDoorApp/app/src/main/res/layout/activity_home.xml" value="0.6" />
+        <entry key="..\:/Users/Noy/StudioProjects/app/src/main/res/layout/activity_home.xml" value="0.15942028985507245" />
+        <entry key="..\:/Users/Noy/StudioProjects/app/src/main/res/layout/profile_layout.xml" value="0.2" />
+        <entry key="..\:/Users/Noy/StudioProjects/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.14635416666666667" />
+        <entry key="..\:/Users/Noy/StudioProjects/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.14635416666666667" />
+        <entry key="..\:/Users/may74/AndroidStudioProjects/NextDoorApp/app/src/main/res/layout/activity_home.xml" value="0.25" />
         <entry key="..\:/Users/may74/AndroidStudioProjects/NextDoorApp/app/src/main/res/layout/activity_login.xml" value="0.402972749793559" />
         <entry key="..\:/Users/may74/AndroidStudioProjects/NextDoorApp/app/src/main/res/layout/activity_registration.xml" value="0.402972749793559" />
-        <entry key="..\:/Users/may74/AndroidStudioProjects/NextDoorApp/app/src/main/res/layout/activity_settings.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/may74/AndroidStudioProjects/NextDoorApp/app/src/main/res/layout/profile_layout.xml" value="0.6" />
         <entry key="..\:/Users/may74/AndroidStudioProjects/NextDoorApp/app/src/main/res/layout/search.xml" value="0.4" />
         <entry key="..\:/Users/may74/AndroidStudioProjects/NextDoorApp/app/src/main/res/layout/search_layout.xml" value="0.264" />
-        <entry key="..\:/Users/may74/AndroidStudioProjects/NextDoorApp/app/src/main/res/menu/navigation_menu.xml" value="0.4" />
       </map>
     </option>
   </component>
