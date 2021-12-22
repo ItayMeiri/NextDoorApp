@@ -9,13 +9,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.NextDoor">
         <activity
+            android:name=".BusinessProfileActivity"
+            android:exported="false" />
+        <activity
             android:name=".SettingsActivity"
             android:exported="false" />
         <activity
             android:name=".RegistrationActivity"
             android:exported="false" />
         <activity
-            android:name=".ProfileActivity"
+            android:name=".RegularProfileActivity"
             android:exported="true" />
         <activity
             android:name=".HomePageActivity"

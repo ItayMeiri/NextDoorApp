@@ -1,6 +1,5 @@
 package com.app.nextdoor;
 
-import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -79,7 +78,7 @@ public class SearchActivity extends AppCompatActivity{
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
-                Intent intent = new Intent(SearchActivity.this,ProfileActivity.class);
+                Intent intent = new Intent(SearchActivity.this, RegularProfileActivity.class);
                 RegistrationActivity.RegularProfile rp = users.get(i);
                 String serializedObject = "";
                 try {

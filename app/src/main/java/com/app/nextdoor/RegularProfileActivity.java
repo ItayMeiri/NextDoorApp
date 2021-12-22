@@ -1,32 +1,20 @@
 package com.app.nextdoor;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 
 import java.io.ByteArrayInputStream;
 import java.io.ObjectInputStream;
 import java.util.Base64;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.Spinner;
+
 import android.widget.TextView;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
-public class ProfileActivity extends AppCompatActivity {
+public class RegularProfileActivity extends AppCompatActivity {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.profile_layout);
+        setContentView(R.layout.activity_regular_profile);
         Bundle extras = getIntent().getExtras();
         if(extras != null)
         {
