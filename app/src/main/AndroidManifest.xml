@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.app.nextdoor">
 
     <application
@@ -25,6 +26,12 @@
             android:exported="false" />
         <activity
             android:name=".SearchActivity"
+            android:exported="true" />
+        <activity
+            android:name=".MyRegularProfileActivity"
+            android:exported="true" />
+        <activity
+            android:name=".MyBusinessProfileActivity"
             android:exported="true" />
         <activity
             android:name=".LoginActivity"

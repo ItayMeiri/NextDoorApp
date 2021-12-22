@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -81,11 +82,12 @@ public class HomePageActivity extends AppCompatActivity implements PopupMenu.OnM
         });
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onMenuItemClick(MenuItem menuItem) {
         switch (menuItem.getItemId()){
             case R.id.myprofile:
-                Intent i = new Intent(HomePageActivity.this, MyProfileActivity.class);
+                Intent i = new Intent(HomePageActivity.this, MyRegularProfileActivity.class);
                 startActivity(i);
                 break;
             case R.id.settings:
