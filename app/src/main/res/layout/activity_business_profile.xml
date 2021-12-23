@@ -11,12 +11,14 @@
         android:layout_width="21dp"
         android:layout_height="20dp"
         android:layout_marginStart="32dp"
+        android:layout_marginTop="40dp"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView7"
         app:srcCompat="@drawable/description_icon"
-        tools:layout_editor_absoluteY="495dp"
         tools:ignore="MissingConstraints" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout3"
         android:layout_width="433dp"
         android:layout_height="203dp"
         android:background="@drawable/backgroundprofile"
@@ -128,9 +130,10 @@
         android:layout_width="21dp"
         android:layout_height="20dp"
         android:layout_marginStart="32dp"
+        android:layout_marginTop="50dp"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout3"
         app:srcCompat="@drawable/address_icon"
-        tools:layout_editor_absoluteY="254dp"
         tools:ignore="MissingConstraints" />
 
     <ImageView
@@ -138,9 +141,10 @@
         android:layout_width="21dp"
         android:layout_height="20dp"
         android:layout_marginStart="32dp"
+        android:layout_marginTop="40dp"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView3"
         app:srcCompat="@drawable/phone_icon"
-        tools:layout_editor_absoluteY="314dp"
         tools:ignore="MissingConstraints" />
 
     <ImageView
@@ -148,9 +152,10 @@
         android:layout_width="21dp"
         android:layout_height="20dp"
         android:layout_marginStart="32dp"
+        android:layout_marginTop="40dp"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView4"
         app:srcCompat="@drawable/time_icon"
-        tools:layout_editor_absoluteY="374dp"
         tools:ignore="MissingConstraints" />
 
     <ImageView
@@ -158,9 +163,10 @@
         android:layout_width="21dp"
         android:layout_height="20dp"
         android:layout_marginStart="32dp"
+        android:layout_marginTop="40dp"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView5"
         app:srcCompat="@drawable/languge_icon"
-        tools:layout_editor_absoluteY="435dp"
         tools:ignore="MissingConstraints" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

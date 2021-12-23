@@ -44,23 +44,23 @@ public class SearchActivity extends AppCompatActivity{
         CheckBox cb = findViewById(R.id.checkBox);
         if(cb.isChecked())
         {
-            ListAllItems("Business");
+            ListAllItems("Business",cb);
         }
         else
         {
-            ListAllItems("Regular");
+            ListAllItems("Regular",cb);
         }
 
 //        basicReadWrite();
     }
 
-    private void ListAllItems(String type) {
+    private void ListAllItems(String type,CheckBox cb) {
 
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("users/" + type);
-        addListener(ref);
+        addListener(ref,cb);
     }
 
-    private void addListener(DatabaseReference ref)
+    private void addListener(DatabaseReference ref,CheckBox cb)
     {
 
         ArrayList<String> listItems=new ArrayList<String>();
@@ -77,22 +77,21 @@ public class SearchActivity extends AppCompatActivity{
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
-                Intent intent = new Intent(SearchActivity.this, RegularProfileActivity.class);
-                RegistrationActivity.RegularProfile rp = users.get(i);
-                String serializedObject = "";
-                try {
-                    ByteArrayOutputStream bo = new ByteArrayOutputStream();
-                    ObjectOutputStream so = new ObjectOutputStream(bo);
-                    so.writeObject(rp);
-                    so.flush();
-                    serializedObject = new String(Base64.getEncoder().encode(bo.toByteArray()));
-                } catch (Exception e) {
-                    System.out.println(e);
+                    Intent intent = new Intent(SearchActivity.this, RegularProfileActivity.class);
+                    RegistrationActivity.RegularProfile rp = users.get(i);
+                    String serializedObject = "";
+                    try {
+                        ByteArrayOutputStream bo = new ByteArrayOutputStream();
+                        ObjectOutputStream so = new ObjectOutputStream(bo);
+                        so.writeObject(rp);
+                        so.flush();
+                        serializedObject = new String(Base64.getEncoder().encode(bo.toByteArray()));
+                    } catch (Exception e) {
+                        System.out.println(e);
+                    }
+                    intent.putExtra("Object", serializedObject);
+                    startActivity(intent);
                 }
-                intent.putExtra("Object", serializedObject);
-                startActivity(intent);
-            }
         });
         ValueEventListener postListener = new ValueEventListener() {
             public void onDataChange(DataSnapshot dataSnapshot) {

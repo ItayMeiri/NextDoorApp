@@ -1,25 +1,35 @@
 package com.app.nextdoor;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -86,7 +96,8 @@ public class RegistrationActivity extends AppCompatActivity {
     EditText Email, Password;
     EditText FullName;
     EditText PhoneNumber;
-    EditText Address;
+    Spinner Address;
+    ArrayAdapter<String> adapter;
     Button SignUp;
     TextView SignIn;
     RadioGroup radioGroup;
@@ -94,6 +105,7 @@ public class RegistrationActivity extends AppCompatActivity {
     RadioButton Business;
     FirebaseAuth myAuth;
     String userType;
+    DatabaseReference databaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,7 +117,7 @@ public class RegistrationActivity extends AppCompatActivity {
         Password = findViewById(R.id.Password2);
         FullName = findViewById(R.id.FullName);
         PhoneNumber = findViewById(R.id.PhoneNumber);
-        Address = findViewById(R.id.Address);
+        Address = findViewById(R.id.spinner2);
         SignUp = findViewById(R.id.button2);
         SignIn = findViewById(R.id.textView2);
         radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
@@ -113,7 +125,56 @@ public class RegistrationActivity extends AppCompatActivity {
         Business = (RadioButton) findViewById(R.id.Business);
         userType = "";
         myAuth = FirebaseAuth.getInstance();
+        databaseReference = FirebaseDatabase.getInstance().getReference("/cities");
 
+
+        String [] items = new String[]{"Choose city"};
+        databaseReference.child("cities").addValueEventListener(new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            int index=1;
+            for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+                String data = snapshot.getValue(String.class);
+                System.out.println(data);
+                items[index]=data;
+                index++;
+            }
+        }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
+            adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item,items){
+            @Override
+            public boolean isEnabled(int position) {
+                if (position==0){
+                    return false;
+                }
+                else {
+                    return true;
+                }
+            }
+
+            @Override
+            public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                TextView tv = (TextView) view;
+                if (position==0){
+                    tv.setTextColor(Color.GRAY);
+                }
+                else {
+                    tv.setTextColor(Color.BLACK);
+                }
+                return view;
+            }
+        };
+
+        adapter.isEnabled(0);
+        Address.setAdapter(adapter);
 
         SignUp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -135,6 +196,7 @@ public class RegistrationActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
+
     }
 
     private boolean Validation(String email,String password, String fullName, String address, String phoneNumber){
@@ -148,10 +210,6 @@ public class RegistrationActivity extends AppCompatActivity {
         }
         else if (TextUtils.isEmpty(password)){
             Password.setError("Please enter your password");
-            return false;
-        }
-        else if (TextUtils.isEmpty(address)){
-            Address.setError("Please enter your address");
             return false;
         }
         else if(TextUtils.isEmpty(phoneNumber)){
@@ -174,11 +232,11 @@ public class RegistrationActivity extends AppCompatActivity {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference reference = database.getReference("users/"+ userType);
         if (userType.equals("Regular")){
-            RegularProfile Rp = new RegularProfile(Address.getText().toString(), PhoneNumber.getText().toString(),20, FullName.getText().toString(), "", new ArrayList<String>(),new ArrayList<String>());
+            RegularProfile Rp = new RegularProfile(Address.getSelectedItem().toString(), PhoneNumber.getText().toString(),20, FullName.getText().toString(), "", new ArrayList<String>(),new ArrayList<String>());
             reference.child(Objects.requireNonNull(myAuth.getUid())).setValue(Rp);
         }
         if (userType.equals("Business")){
-            BusinessProfile Bp = new BusinessProfile(Address.getText().toString(), PhoneNumber.getText().toString(), FullName.getText().toString(), new ArrayList<String>(), "00:00 - 00:00","");
+            BusinessProfile Bp = new BusinessProfile(Address.getSelectedItem().toString(), PhoneNumber.getText().toString(), FullName.getText().toString(), new ArrayList<String>(), "00:00 - 00:00","");
             reference.child(Objects.requireNonNull(myAuth.getUid())).setValue(Bp);
         }
     }
@@ -188,7 +246,7 @@ public class RegistrationActivity extends AppCompatActivity {
         String password = Password.getText().toString();
         String fullName = FullName.getText().toString();
         String phoneNumber = PhoneNumber.getText().toString();
-        String address = Address.getText().toString();
+        String address = Address.getSelectedItem().toString();
         if (Validation(email,password,fullName,address,phoneNumber)){
             myAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                 @Override
