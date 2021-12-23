@@ -20,10 +20,14 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.io.Serializable;
+import java.util.Scanner;
 
 
 public class RegistrationActivity extends AppCompatActivity {
@@ -38,9 +42,7 @@ public class RegistrationActivity extends AppCompatActivity {
         public List<String> Lang;
         public List<String> Hobbies;
 
-        public RegularProfile(){
-
-        }
+        public RegularProfile(){}
 
         public RegularProfile(String A, String P, int a, String F, String J,List<String> L, List<String> H){
             Address=A;
@@ -69,9 +71,7 @@ public class RegistrationActivity extends AppCompatActivity {
         public String ActivityTime;
         public String Description;
 
-        public BusinessProfile(){
-
-        }
+        public BusinessProfile(){}
 
         public BusinessProfile(String A, String P, String F, List<String> sL,String aT, String D){
             Address=A;
@@ -81,7 +81,6 @@ public class RegistrationActivity extends AppCompatActivity {
             ActivityTime=aT;
             Description=D;
         }
-
     }
 
     EditText Email, Password;
@@ -196,8 +195,14 @@ public class RegistrationActivity extends AppCompatActivity {
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if(task.isSuccessful()){
                         addToDatabase(userType);
-                        Intent i = new Intent(RegistrationActivity.this,HomePageActivity.class);
-                        startActivity(i);
+                        if (userType=="Regular"){
+                            Intent i = new Intent(RegistrationActivity.this,MyRegularProfileActivity.class);
+                            startActivity(i);
+                        }
+                        else {
+                            Intent i = new Intent(RegistrationActivity.this,MyBusinessProfileActivity.class);
+                            startActivity(i);
+                        }
                     }
                     else {
                         Toast.makeText(RegistrationActivity.this,"Registration failed",Toast.LENGTH_LONG).show();
@@ -208,6 +213,5 @@ public class RegistrationActivity extends AppCompatActivity {
         else {
             Toast.makeText(RegistrationActivity.this,"Registration failed",Toast.LENGTH_LONG).show();
         }
-
     }
 }

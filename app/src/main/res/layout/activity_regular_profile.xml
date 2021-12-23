@@ -63,7 +63,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="427dp"
         android:layout_height="204dp"
-        android:background="@drawable/profileback"
+        android:background="@drawable/backgroundprofile"
         tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteX="-13dp"
         tools:layout_editor_absoluteY="1dp">

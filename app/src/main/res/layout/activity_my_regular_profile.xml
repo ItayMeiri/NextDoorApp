@@ -4,13 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#0083ECCB"
     tools:context=".MyRegularProfileActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
         android:layout_width="436dp"
         android:layout_height="244dp"
-        android:background="@drawable/profileback"
+        android:background="@drawable/backgroundprofile"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteX="-13dp">
@@ -46,12 +47,12 @@
         android:layout_width="155dp"
         android:layout_height="146dp"
         android:layout_marginTop="28dp"
+        android:contentDescription="TODO"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.137"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/person"
-        android:contentDescription="TODO" />
+        app:srcCompat="@drawable/person" />
 
     <TextView
         android:id="@+id/PageName"

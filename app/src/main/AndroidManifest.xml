@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.NextDoor">
         <activity
+            android:name=".CityRepresentativeHomePageActivity"
+            android:exported="false" />
+        <activity
             android:name=".BusinessProfileActivity"
             android:exported="false" />
         <activity

@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
@@ -25,6 +26,7 @@ public class LoginActivity extends AppCompatActivity {
     EditText Email, Password;
     Button SignIn;
     TextView SignUp;
+    TextView ResetPassword;
     FirebaseAuth myAuth;
 
     @Override
@@ -36,6 +38,7 @@ public class LoginActivity extends AppCompatActivity {
         Password = findViewById(R.id.Password1);
         SignIn = findViewById(R.id.button1);
         SignUp = findViewById(R.id.textView1);
+        ResetPassword = findViewById(R.id.forgetpassword);
         myAuth = FirebaseAuth.getInstance();
 
         SignIn.setOnClickListener(new View.OnClickListener() {
@@ -50,6 +53,13 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent i = new Intent(LoginActivity.this, RegistrationActivity.class);
                 startActivity(i);
+            }
+        });
+
+        ResetPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                resetPassword(myAuth,Email.getText().toString());
             }
         });
     }
@@ -90,7 +100,20 @@ public class LoginActivity extends AppCompatActivity {
         else {
             Toast.makeText(LoginActivity.this,"Login failed",Toast.LENGTH_LONG).show();
         }
+    }
 
+    public void resetPassword(FirebaseAuth auth,String email){
+        auth.sendPasswordResetEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    Toast.makeText(LoginActivity.this,"A password reset message has been sent to an email that exists in the system",Toast.LENGTH_LONG).show();
+                }
+                else {
+                    Toast.makeText(LoginActivity.this,"Action failed. Please try again",Toast.LENGTH_LONG).show();
+                }
+            }
+        });
     }
 
 }

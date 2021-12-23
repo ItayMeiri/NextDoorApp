@@ -17,6 +17,8 @@ import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.app.nextdoor.RegistrationActivity;
+
 
 public class HomePageActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
 
@@ -32,8 +34,8 @@ public class HomePageActivity extends AppCompatActivity implements PopupMenu.OnM
 
         search = findViewById(R.id.search);
         menu = findViewById(R.id.button3);
-
         sp = findViewById(R.id.spinner);
+
         String [] items = new String[]{"Language","English","French","Hebrew"};
         adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item,items){
             @Override

@@ -41,13 +41,13 @@
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
-        android:layout_width="418dp"
-        android:layout_height="53dp"
+        android:layout_width="420dp"
+        android:layout_height="61dp"
         android:background="?attr/colorPrimary"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"
         tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="1dp"
+        tools:layout_editor_absoluteX="-1dp"
         tools:layout_editor_absoluteY="0dp" />
 
     <LinearLayout

@@ -10,7 +10,7 @@
         android:id="@+id/constraintLayout2"
         android:layout_width="436dp"
         android:layout_height="244dp"
-        android:background="@drawable/profileback"
+        android:background="@drawable/backgroundprofile"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteX="-13dp">
