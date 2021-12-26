@@ -31,8 +31,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -42,6 +47,32 @@ import java.util.Scanner;
 
 public class RegistrationActivity extends AppCompatActivity {
 
+    public class namesList {
+        public ArrayList<String> citiesList;
+        public namesList()
+        {
+            citiesList=  new ArrayList<>();
+        }
+
+        public String[] retrieveAsArray() {
+            BufferedReader reader;
+            try {
+                reader =     reader = new BufferedReader(
+                        new InputStreamReader(getAssets().open("cities_en.csv")));
+                String line = reader.readLine();
+                while (line != null) {
+                    line = line.charAt(0) + line.substring(1).toLowerCase();
+                    citiesList.add(line);
+                    // read next line
+                    line = reader.readLine();
+                }
+                reader.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return citiesList.toArray(new String[0]);
+        }
+    }
 
     public static class RegularProfile implements Serializable{
         public String Address;
@@ -128,7 +159,9 @@ public class RegistrationActivity extends AppCompatActivity {
         databaseReference = FirebaseDatabase.getInstance().getReference("/cities");
 
 
-        String [] items = new String[]{"Choose city"};
+        namesList nl = new namesList();
+//        String [] items = new String[]{"Choose city"};
+        String [] items = nl.retrieveAsArray();
         databaseReference.child("cities").addValueEventListener(new ValueEventListener() {
         @Override
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
