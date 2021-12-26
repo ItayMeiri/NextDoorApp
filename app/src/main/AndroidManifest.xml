@@ -13,6 +13,9 @@
             android:name=".CityRepresentativeHomePageActivity"
             android:exported="false" />
         <activity
+            android:name=".ChooseChatActivity"
+            android:exported="true" />
+        <activity
             android:name=".BusinessProfileActivity"
             android:exported="false" />
         <activity

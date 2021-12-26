@@ -84,6 +84,13 @@ public class HomePageActivity extends AppCompatActivity implements PopupMenu.OnM
         });
     }
 
+    public void chooseChat(View v)
+    {
+        Intent intent = new Intent(HomePageActivity.this, ChooseChatActivity.class);
+
+        startActivity(intent);
+    }
+
     @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onMenuItemClick(MenuItem menuItem) {

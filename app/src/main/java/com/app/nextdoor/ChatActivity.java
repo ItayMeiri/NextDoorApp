@@ -25,7 +25,7 @@ import java.util.Date;
 public class ChatActivity extends AppCompatActivity {
 
     FirebaseAuth mAuth;
-    String otherUser = "Mn8l9kbHX9fPqVeoXLanyrVb2Q42"; // Mike Mikey - just to test!
+    String otherUser = ""; // Mike Mikey - just to test!
     ArrayList<String> listItems;
     ArrayAdapter<String> adapter;
     DatabaseReference ref;
@@ -70,7 +70,7 @@ public class ChatActivity extends AppCompatActivity {
         public String toString()
         {
             FirebaseDatabase database = FirebaseDatabase.getInstance();
-            return date.toString() + getSenderID().substring(0, 5) + ": " + msg;
+            return getSenderID() + "(" + date.getHours() +":" + date.getMinutes() + ")" + ":" + msg;
         }
     }
 
@@ -85,7 +85,13 @@ public class ChatActivity extends AppCompatActivity {
         }
         else
         {
+
             setContentView(R.layout.chat_layout);
+            Bundle extras = getIntent().getExtras();
+            otherUser = extras.getString("token");
+            senderName = extras.getString("senderName");
+            receiverName = extras.getString("receiverName");
+
             FirebaseDatabase database = FirebaseDatabase.getInstance();
             if(mAuth.getCurrentUser().getUid().compareTo(otherUser) > 0)
             {
@@ -154,7 +160,8 @@ public class ChatActivity extends AppCompatActivity {
 
         //maybe add cool-down?
 
-        Message message = new Message(currentTime, msgToSend,mAuth.getCurrentUser().getUid(), otherUser, false);
+//        Message message = new Message(currentTime, msgToSend,mAuth.getCurrentUser().getUid(), otherUser, false);
+        Message message = new Message(currentTime, msgToSend, senderName, receiverName, false);
         ref.push().setValue(message);
 //        ref.addListenerForSingleValueEvent(new ValueEventListener() {
 //            @Override
