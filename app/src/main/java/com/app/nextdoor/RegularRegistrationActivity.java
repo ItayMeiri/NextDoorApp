@@ -3,6 +3,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -23,6 +24,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -31,6 +34,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -40,6 +47,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 
 public class RegularRegistrationActivity extends AppCompatActivity {
@@ -79,10 +87,11 @@ public class RegularRegistrationActivity extends AppCompatActivity {
         public String job;
         public List<String> lang;
         public List<String> hobbies;
+        public String Url;
 
         public RegularProfile(){}
 
-        public RegularProfile(String A, String P, String a, String F, String J,List<String> L, List<String> H){
+        public RegularProfile(String A, String P, String a, String F, String J,List<String> L, List<String> H,String iM){
             address=A;
             phone=P;
             age=a;
@@ -90,6 +99,7 @@ public class RegularRegistrationActivity extends AppCompatActivity {
             job=J;
             lang=L;
             hobbies=H;
+            Url=iM;
         }
 
         public String getAddress() {
@@ -119,6 +129,9 @@ public class RegularRegistrationActivity extends AppCompatActivity {
             return job;
         }
 
+        public String getUrl (){
+            return Url;
+        }
 
         @NonNull
         public String toString()
@@ -139,12 +152,15 @@ public class RegularRegistrationActivity extends AppCompatActivity {
     TextView Camera;
     TextView Gallery;
     ImageView Photo;
-    ArrayList<String>arr_hobbies;
+    String imageUrl;
     ArrayAdapter<String> adapter;
     Button SignUp;
     TextView SignIn;
     FirebaseAuth myAuth;
     DatabaseReference databaseReference;
+    FirebaseStorage FbS;
+    StorageReference Sr;
+    StorageReference Pr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -166,9 +182,19 @@ public class RegularRegistrationActivity extends AppCompatActivity {
         Hobbies = findViewById(R.id.hobiies);
         SignUp = findViewById(R.id.button2);
         SignIn = findViewById(R.id.textView2);
+        imageUrl = "";
         myAuth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference("/cities");
+        FbS = FirebaseStorage.getInstance();
+        Sr = FbS.getReference();
 
+        Pr = Sr.child("users/"+myAuth.getCurrentUser().getUid()+"/ProfileImage.jpg");
+        Pr.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Picasso.get().load(uri).into(Photo);
+            }
+        });
 
         namesList nl = new namesList();
         String [] items = nl.retrieveAsArray();
@@ -247,33 +273,50 @@ public class RegularRegistrationActivity extends AppCompatActivity {
                 choosePhotoFromGallery();
             }
         });
+
     }
 
     public void takePicture(){
         Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(i,0);
+        startActivityForResult(i,1000);
     }
 
     public void choosePhotoFromGallery(){
         Intent i = new Intent(Intent.ACTION_PICK,MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(i,0);
+        startActivityForResult(i,1000);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        if (resultCode == RESULT_OK){
-            Uri targetUri = data.getData();
-            Bitmap bitmap;
-            try {
-                bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(targetUri));
-                Photo.setImageBitmap(bitmap);
-            } catch (FileNotFoundException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+        if (resultCode== Activity.RESULT_OK){
+            Uri imageId = data.getData();
+            uploadPicture(imageId);
         }
+    }
+
+    public void uploadPicture(Uri uri){
+        StorageReference reference = Sr.child("users/"+myAuth.getCurrentUser().getUid()+"/ProfileImage.jpg");
+        reference.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                Task<Uri> downloadUri = taskSnapshot.getStorage().getDownloadUrl();
+                if(downloadUri.isSuccessful()) {
+                    imageUrl = downloadUri.getResult().toString();
+                }
+                reference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        Picasso.get().load(uri).into(Photo);
+                    }
+                });
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(RegularRegistrationActivity.this,"failed",Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     private boolean Validation(String email,String password, String fullName, String address, String phoneNumber){
@@ -307,7 +350,7 @@ public class RegularRegistrationActivity extends AppCompatActivity {
         ArrayList<String> emptylist2 = new ArrayList<>();
         emptylist1.add("");
         emptylist2.add("");
-        RegularProfile Rp = new RegularProfile(Address.getSelectedItem().toString(), PhoneNumber.getText().toString(),Age.getText().toString(), FullName.getText().toString(), Job.getText().toString(), emptylist1,emptylist2);
+        RegularProfile Rp = new RegularProfile(Address.getSelectedItem().toString(), PhoneNumber.getText().toString(),Age.getText().toString(), FullName.getText().toString(), Job.getText().toString(), emptylist1,emptylist2,imageUrl);
         reference.child(Objects.requireNonNull(myAuth.getUid())).setValue(Rp);
     }
 

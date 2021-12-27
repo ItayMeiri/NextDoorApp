@@ -1,5 +1,6 @@
 package com.app.nextdoor;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -9,10 +10,18 @@ import java.io.ByteArrayInputStream;
 import java.io.ObjectInputStream;
 import java.util.Base64;
 
+import android.provider.MediaStore;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 public class RegularProfileActivity extends AppCompatActivity {
 
@@ -21,6 +30,7 @@ public class RegularProfileActivity extends AppCompatActivity {
     String token;
     String senderName;
     String receiverName;
+    ImageView Photo;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,6 +45,24 @@ public class RegularProfileActivity extends AppCompatActivity {
             senderName = extras.getString("myName");
             receiverName = extras.getString("Name");
         }
+
+        Photo = findViewById(R.id.imageView6);
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
+        DatabaseReference dr = db.getReference();
+        DatabaseReference image = dr.child("Url");
+
+        image.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String s = snapshot.getValue(String.class);
+                Picasso.get().load(s).into(Photo);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     private void createProfile(String object) {
