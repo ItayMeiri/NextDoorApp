@@ -4,6 +4,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -40,10 +42,12 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Serializable;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -87,7 +91,7 @@ public class RegularRegistrationActivity extends AppCompatActivity {
         public String job;
         public List<String> lang;
         public List<String> hobbies;
-        public String Url;
+        public String imgurl;
 
         public RegularProfile(){}
 
@@ -99,7 +103,7 @@ public class RegularRegistrationActivity extends AppCompatActivity {
             job=J;
             lang=L;
             hobbies=H;
-            Url=iM;
+            imgurl=iM;
         }
 
         public String getAddress() {
@@ -130,7 +134,7 @@ public class RegularRegistrationActivity extends AppCompatActivity {
         }
 
         public String getUrl (){
-            return Url;
+            return imgurl;
         }
 
         @NonNull
@@ -161,6 +165,7 @@ public class RegularRegistrationActivity extends AppCompatActivity {
     FirebaseStorage FbS;
     StorageReference Sr;
     StorageReference Pr;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -260,6 +265,7 @@ public class RegularRegistrationActivity extends AppCompatActivity {
             }
         });
 
+
         Camera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -276,9 +282,13 @@ public class RegularRegistrationActivity extends AppCompatActivity {
 
     }
 
-    public void takePicture(){
-        Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(i,1000);
+    private void takePicture(){
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        try {
+            startActivityForResult(takePictureIntent, 1);
+        } catch (ActivityNotFoundException e) {
+            // display error state to the user
+        }
     }
 
     public void choosePhotoFromGallery(){
@@ -286,11 +296,23 @@ public class RegularRegistrationActivity extends AppCompatActivity {
         startActivityForResult(i,1000);
     }
 
+
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
+    }
+//
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode== Activity.RESULT_OK){
-            Uri imageId = data.getData();
+        if (resultCode == RESULT_OK && requestCode == 1) {
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            Uri imageId = getImageUri(this, imageBitmap);
+//            Uri imageId = data.getData();
+
             uploadPicture(imageId);
         }
     }
