@@ -86,7 +86,6 @@ public class HomePageActivity extends AppCompatActivity implements PopupMenu.OnM
     public void chooseChat(View v)
     {
         Intent intent = new Intent(HomePageActivity.this, ChooseChatActivity.class);
-
         startActivity(intent);
     }
 

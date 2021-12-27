@@ -72,58 +72,58 @@ public class RegularRegistrationActivity extends AppCompatActivity {
     }
 
     public static class RegularProfile implements Serializable {
-        public String Address;
-        public String PhoneNumber;
-        public String Age;
-        public String FullName;
-        public String Job;
-        public List<String> Lang;
-        public List<String> Hobbies;
+        public String address;
+        public String phone;
+        public String age;
+        public String fullName;
+        public String job;
+        public List<String> lang;
+        public List<String> hobbies;
 
         public RegularProfile(){}
 
         public RegularProfile(String A, String P, String a, String F, String J,List<String> L, List<String> H){
-            Address=A;
-            PhoneNumber=P;
-            Age=a;
-            FullName=F;
-            Job=J;
-            Lang=L;
-            Hobbies=H;
+            address=A;
+            phone=P;
+            age=a;
+            fullName=F;
+            job=J;
+            lang=L;
+            hobbies=H;
         }
 
         public String getAddress() {
-            return Address;
+            return address;
         }
         public String getPhoneNumber(){
-            return PhoneNumber;
+            return phone;
         }
 
         public List<String> getHobbies() {
-            return Hobbies;
+            return hobbies;
         }
 
         public List<String> getLang() {
-            return Lang;
+            return lang;
         }
 
         public String getAge() {
-            return Age;
+            return age;
         }
 
         public String getFullName() {
-            return FullName;
+            return fullName;
         }
 
         public String getJob() {
-            return Job;
+            return job;
         }
 
 
         @NonNull
         public String toString()
         {
-            return "Name: " + FullName + "\nAddress:" + Address;
+            return "Name: " + fullName + "\nAddress:" + address;
         }
 
     }

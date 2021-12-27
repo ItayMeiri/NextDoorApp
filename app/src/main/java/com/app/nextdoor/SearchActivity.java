@@ -14,6 +14,7 @@ import android.widget.ListView;
 import java.util.Base64;
 
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -31,6 +32,7 @@ public class SearchActivity extends AppCompatActivity{
     String nameToSearch = "";
     String cityToSearch = "";
     String type = "";
+    String myUserName = "";
     ArrayList<RegularRegistrationActivity.RegularProfile> users;
     ArrayList<BusinessRegistrationActivity.BusinessProfile> bUsers;
 
@@ -97,6 +99,8 @@ public class SearchActivity extends AppCompatActivity{
                     }
                     intent.putExtra("Object", serializedObject);
                     intent.putExtra("Key", ids.get(i));
+                    intent.putExtra("Name",rp.getFullName());
+                    intent.putExtra("myName", myUserName);
                     startActivity(intent);
                 }
         });
@@ -107,10 +111,13 @@ public class SearchActivity extends AppCompatActivity{
                 for(DataSnapshot snap : dataSnapshot.getChildren())
                 {
                     if(type.equals("Regular")) {
-                        System.out.println("id= " + snap.getKey());
-                        RegularRegistrationActivity.RegularProfile RP = snap.getValue(RegularRegistrationActivity.RegularProfile.class);
 
-                    if(RP.Address.contains(cityToSearch) && RP.FullName.contains(nameToSearch))
+                        RegularRegistrationActivity.RegularProfile RP = snap.getValue(RegularRegistrationActivity.RegularProfile.class);
+                        if(snap.getKey().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
+                        {
+                            myUserName = RP.fullName;
+                        }
+                    if(RP.address.contains(cityToSearch) && RP.fullName.contains(nameToSearch))
                     {
 //                        listItems.add(RP.toString());
                         users.add(RP);
@@ -121,6 +128,10 @@ public class SearchActivity extends AppCompatActivity{
                     else{
                         System.out.println("id= " + snap.getKey());
                         BusinessRegistrationActivity.BusinessProfile RP = snap.getValue(BusinessRegistrationActivity.BusinessProfile.class);
+                        if(snap.getKey().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
+                        {
+                            myUserName = RP.fullName;
+                        }
                         if(RP.address.contains(cityToSearch) && RP.fullName.contains(nameToSearch))
                         {
 //                        listItems.add(RP.toString());

@@ -48,7 +48,7 @@ public class ChooseChatActivity extends AppCompatActivity {
                     RegularRegistrationActivity.RegularProfile RP = snap.getValue(RegularRegistrationActivity.RegularProfile.class);
                     if(snap.getKey().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
                     {
-                        senderName = RP.FullName;
+                        senderName = RP.fullName;
                         System.out.println("UPDATED! " + senderName);
                         continue;
                     }
@@ -68,7 +68,7 @@ public class ChooseChatActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent intent = new Intent(ChooseChatActivity.this, ChatActivity.class);
-                String receiverName = users.get(i).FullName;
+                String receiverName = users.get(i).fullName;
                 String token = ids.get(i);
                 intent.putExtra("token", token);
                 intent.putExtra("receiverName",receiverName);

@@ -2,6 +2,7 @@ package com.app.nextdoor;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import java.io.ByteArrayInputStream;
@@ -11,19 +12,28 @@ import java.util.Base64;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 public class RegularProfileActivity extends AppCompatActivity {
 
     RegularRegistrationActivity.RegularProfile u;
     String id = "";
+    String token;
+    String senderName;
+    String receiverName;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_regular_profile);
+
         Bundle extras = getIntent().getExtras();
         if(extras != null)
         {
 
             createProfile(extras.getString("Object"));
-            id = extras.getString("Key");
+            token = extras.getString("Key");
+            senderName = extras.getString("myName");
+            receiverName = extras.getString("Name");
         }
     }
 
@@ -43,16 +53,22 @@ public class RegularProfileActivity extends AppCompatActivity {
         TextView tv2 = findViewById(R.id.PageName2);
 
         assert u != null;
-        tv1.append(u.Address);
-        tv2.append(u.FullName);
+        tv1.append(u.address);
+        tv2.append(u.fullName);
     }
 
     public void onClick(View v)
     {
         // The current user
+        String currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        //The other user
-        System.out.println("Onclick: "  + id);
+        Intent i = new Intent(RegularProfileActivity.this, ChatActivity.class);
+        i.putExtra("senderName", senderName);
+        i.putExtra("receiverName", receiverName);
+        i.putExtra("token", token);
+//        setContentView(R.layout.chat_layout);
+        startActivity(i);
+
 
 
 
