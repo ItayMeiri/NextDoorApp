@@ -73,23 +73,48 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
 
     public static class BusinessProfile {
 
-        public String Address;
-        public String PhoneNumber;
-        public String FullName;
-        public List<String> ServiceLang;
-        public String ActivityTime;
-        public String Description;
+        public String address;
+        public String phone;
+        public String fullName;
+        public List<String> serviceLang;
+        public String activeTime;
+        public String description;
 
         public BusinessProfile(){}
 
         public BusinessProfile(String A, String P, String F, List<String> sL,String aT, String D){
-            Address=A;
-            PhoneNumber=P;
-            FullName=F;
-            ServiceLang=sL;
-            ActivityTime=aT;
-            Description=D;
+            address=A;
+            phone=P;
+            fullName=F;
+            serviceLang=sL;
+            activeTime=aT;
+            description=D;
         }
+
+        public String getAddress() {
+            return address;
+        }
+
+        public String getPhoneNumber() {
+            return phone;
+        }
+
+        public String getFullName() {
+            return fullName;
+        }
+
+        public List<String> getServiceLang() {
+            return serviceLang;
+        }
+
+        public String getActivityTime() {
+            return activeTime;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
     }
 
     EditText Email, Password;
@@ -265,6 +290,7 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference reference = database.getReference("users/Business");
         BusinessProfile Rp = new BusinessProfile(Address.getSelectedItem().toString(), PhoneNumber.getText().toString(), FullName.getText().toString(), new ArrayList<String>(), ActivityTime.getText().toString(),Description.getText().toString());
+//        BusinessProfile Rp = new BusinessProfile("test", "p", "F", new ArrayList<>(), "aT", "D");
         reference.child(Objects.requireNonNull(myAuth.getUid())).setValue(Rp);
     }
 

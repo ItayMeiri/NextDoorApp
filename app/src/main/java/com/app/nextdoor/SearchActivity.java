@@ -30,7 +30,9 @@ public class SearchActivity extends AppCompatActivity{
 
     String nameToSearch = "";
     String cityToSearch = "";
+    String type = "";
     ArrayList<RegularRegistrationActivity.RegularProfile> users;
+    ArrayList<BusinessRegistrationActivity.BusinessProfile> bUsers;
 
     public void onClick(View v)
     {
@@ -44,10 +46,12 @@ public class SearchActivity extends AppCompatActivity{
         CheckBox cb = findViewById(R.id.checkBox);
         if(cb.isChecked())
         {
+            type = "Business";
             ListAllItems("Business",cb);
         }
         else
         {
+            type = "Regular";
             ListAllItems("Regular",cb);
         }
 
@@ -65,6 +69,7 @@ public class SearchActivity extends AppCompatActivity{
 
         ArrayList<String> listItems=new ArrayList<String>();
         users = new ArrayList<>();
+        bUsers = new ArrayList<>();
 //        listItems.add("test2");
 
 
@@ -73,6 +78,7 @@ public class SearchActivity extends AppCompatActivity{
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listItems);
         listView.setAdapter(adapter);
+        ArrayList<String> ids = new ArrayList<>();
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -90,24 +96,39 @@ public class SearchActivity extends AppCompatActivity{
                         System.out.println(e);
                     }
                     intent.putExtra("Object", serializedObject);
+                    intent.putExtra("Key", ids.get(i));
                     startActivity(intent);
                 }
         });
         ValueEventListener postListener = new ValueEventListener() {
             public void onDataChange(DataSnapshot dataSnapshot) {
-//                adapter.add("test3");
-//                System.out.println("dsn: " + dataSnapshot.toString());
+
 
                 for(DataSnapshot snap : dataSnapshot.getChildren())
                 {
-                    RegularRegistrationActivity.RegularProfile RP = snap.getValue(RegularRegistrationActivity.RegularProfile.class);
+                    if(type.equals("Regular")) {
+                        System.out.println("id= " + snap.getKey());
+                        RegularRegistrationActivity.RegularProfile RP = snap.getValue(RegularRegistrationActivity.RegularProfile.class);
+
                     if(RP.Address.contains(cityToSearch) && RP.FullName.contains(nameToSearch))
                     {
 //                        listItems.add(RP.toString());
                         users.add(RP);
                         adapter.add(RP.toString());
+                        ids.add(snap.getKey());
                     }
-
+                    }
+                    else{
+                        System.out.println("id= " + snap.getKey());
+                        BusinessRegistrationActivity.BusinessProfile RP = snap.getValue(BusinessRegistrationActivity.BusinessProfile.class);
+                        if(RP.address.contains(cityToSearch) && RP.fullName.contains(nameToSearch))
+                        {
+//                        listItems.add(RP.toString());
+                            bUsers.add(RP);
+                            adapter.add(RP.toString());
+                            ids.add(snap.getKey());
+                        }
+                    }
                 }
             }
 

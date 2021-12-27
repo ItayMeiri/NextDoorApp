@@ -92,6 +92,34 @@ public class RegularRegistrationActivity extends AppCompatActivity {
             Hobbies=H;
         }
 
+        public String getAddress() {
+            return Address;
+        }
+        public String getPhoneNumber(){
+            return PhoneNumber;
+        }
+
+        public List<String> getHobbies() {
+            return Hobbies;
+        }
+
+        public List<String> getLang() {
+            return Lang;
+        }
+
+        public String getAge() {
+            return Age;
+        }
+
+        public String getFullName() {
+            return FullName;
+        }
+
+        public String getJob() {
+            return Job;
+        }
+
+
         @NonNull
         public String toString()
         {
@@ -275,7 +303,11 @@ public class RegularRegistrationActivity extends AppCompatActivity {
     private void addToDatabase(){
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference reference = database.getReference("users/Regular");
-        RegularProfile Rp = new RegularProfile(Address.getSelectedItem().toString(), PhoneNumber.getText().toString(),Age.getText().toString(), FullName.getText().toString(), Job.getText().toString(), new ArrayList<String>(),new ArrayList<String>());
+        ArrayList<String> emptylist1 = new ArrayList<>();
+        ArrayList<String> emptylist2 = new ArrayList<>();
+        emptylist1.add("");
+        emptylist2.add("");
+        RegularProfile Rp = new RegularProfile(Address.getSelectedItem().toString(), PhoneNumber.getText().toString(),Age.getText().toString(), FullName.getText().toString(), Job.getText().toString(), emptylist1,emptylist2);
         reference.child(Objects.requireNonNull(myAuth.getUid())).setValue(Rp);
     }
 
