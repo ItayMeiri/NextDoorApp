@@ -91,6 +91,13 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
             description=D;
         }
 
+        @Override
+        public String toString()
+        {
+            return "Name: " + fullName + "\nAddress:" + address;
+        }
+
+
         public String getAddress() {
             return address;
         }
