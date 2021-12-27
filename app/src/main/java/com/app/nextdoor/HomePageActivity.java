@@ -17,8 +17,6 @@ import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.app.nextdoor.RegistrationActivity;
-
 
 public class HomePageActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
 
@@ -26,6 +24,7 @@ public class HomePageActivity extends AppCompatActivity implements PopupMenu.OnM
     Button menu;
     Spinner sp;
     ArrayAdapter<String> adapter;
+    String userType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,7 +95,13 @@ public class HomePageActivity extends AppCompatActivity implements PopupMenu.OnM
     public boolean onMenuItemClick(MenuItem menuItem) {
         switch (menuItem.getItemId()){
             case R.id.myprofile:
-                Intent i = new Intent(HomePageActivity.this, MyRegularProfileActivity.class);
+                Intent i;
+                if (userType.equals("Regular")){
+                    i = new Intent(HomePageActivity.this, EditRegularProfileActivity.class);
+                }
+                else {
+                    i = new Intent(HomePageActivity.this, EditBusinessProfileActivity.class);
+                }
                 startActivity(i);
                 break;
             case R.id.settings:

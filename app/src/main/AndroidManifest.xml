@@ -10,6 +10,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.NextDoor">
         <activity
+            android:name=".BusinessRegistrationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".RegularRegistrationActivity"
+            android:exported="false" />
+        <activity
             android:name=".CityRepresentativeHomePageActivity"
             android:exported="false" />
         <activity
@@ -25,9 +31,6 @@
             android:name=".ChatActivity"
             android:exported="true" />
         <activity
-            android:name=".RegistrationActivity"
-            android:exported="true" />
-        <activity
             android:name=".RegularProfileActivity"
             android:exported="true" />
         <activity
@@ -37,10 +40,13 @@
             android:name=".SearchActivity"
             android:exported="true" />
         <activity
-            android:name=".MyRegularProfileActivity"
+            android:name=".EditRegularProfileActivity"
             android:exported="true" />
         <activity
-            android:name=".MyBusinessProfileActivity"
+            android:name=".EditBusinessProfileActivity"
+            android:exported="true" />
+        <activity
+            android:name=".RegistrationActivity"
             android:exported="true" />
         <activity
             android:name=".LoginActivity"

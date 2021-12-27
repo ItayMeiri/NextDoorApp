@@ -18,10 +18,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.Base64;
 
 public class ChooseChatActivity extends AppCompatActivity {
 
@@ -40,7 +37,7 @@ public class ChooseChatActivity extends AppCompatActivity {
         ArrayList<String> listItems = new ArrayList<>();
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listItems);
         ArrayList<String> ids = new ArrayList<>();
-        ArrayList<RegistrationActivity.RegularProfile> users = new ArrayList<>();
+        ArrayList<RegularRegistrationActivity.RegularProfile> users = new ArrayList<>();
         myFriends.setAdapter(adapter);
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -48,7 +45,7 @@ public class ChooseChatActivity extends AppCompatActivity {
                 for(DataSnapshot snap: snapshot.getChildren())
                 {
 
-                    RegistrationActivity.RegularProfile RP = snap.getValue(RegistrationActivity.RegularProfile.class);
+                    RegularRegistrationActivity.RegularProfile RP = snap.getValue(RegularRegistrationActivity.RegularProfile.class);
                     if(snap.getKey().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
                     {
                         senderName = RP.FullName;

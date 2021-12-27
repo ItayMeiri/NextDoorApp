@@ -24,19 +24,19 @@ public class RegularProfileActivity extends AppCompatActivity {
     }
 
     private void createProfile(String object) {
-        RegistrationActivity.RegularProfile u = null;
+        RegularRegistrationActivity.RegularProfile u = null;
         try {
             byte b[] = Base64.getDecoder().decode(object.getBytes());
             ByteArrayInputStream bi = new ByteArrayInputStream(b);
             ObjectInputStream si = new ObjectInputStream(bi);
-            u = (RegistrationActivity.RegularProfile) si.readObject();
+            u = (RegularRegistrationActivity.RegularProfile) si.readObject();
         }
         catch (Exception e) {
             e.printStackTrace();
         }
 
-        TextView tv1 = findViewById(R.id.LocationName);
-        TextView tv2 = findViewById(R.id.PageName);
+        TextView tv1 = findViewById(R.id.LocationName2);
+        TextView tv2 = findViewById(R.id.PageName2);
 
         assert u != null;
         tv1.append(u.Address);

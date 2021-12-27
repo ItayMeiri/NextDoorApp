@@ -5,12 +5,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,7 +18,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-        import com.google.firebase.auth.FirebaseUser;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -28,6 +26,9 @@ public class LoginActivity extends AppCompatActivity {
     TextView SignUp;
     TextView ResetPassword;
     FirebaseAuth myAuth;
+    CheckBox RememberMe;
+    private SharedPreferences Sp;
+    private SharedPreferences.Editor remember;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,10 +42,22 @@ public class LoginActivity extends AppCompatActivity {
         ResetPassword = findViewById(R.id.forgetpassword);
         myAuth = FirebaseAuth.getInstance();
 
+        RememberMe = findViewById(R.id.checkBox2);
+        Sp = getSharedPreferences("rememberLogin", MODE_PRIVATE);
+        remember = Sp.edit();
+        boolean rememberMe = Sp.getBoolean("rememberMe", false);
+        if (rememberMe) {
+            Email.setText(Sp.getString("email", ""));
+            Password.setText(Sp.getString("password", ""));
+            RememberMe.setChecked(true);
+        }
+
+
         SignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Login();
+                rememberMe();
             }
         });
 
@@ -114,6 +127,19 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    public void rememberMe (){
+        String email = Email.getText().toString();
+        String password = Password.getText().toString();
+        if (RememberMe.isChecked()) {
+            remember.putBoolean("rememberMe", true);
+            remember.putString("email", email);
+            remember.putString("password", password);
+        } else {
+            remember.clear();
+        }
+        remember.commit();
     }
 
 }

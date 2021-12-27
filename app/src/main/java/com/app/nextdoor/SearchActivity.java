@@ -30,7 +30,7 @@ public class SearchActivity extends AppCompatActivity{
 
     String nameToSearch = "";
     String cityToSearch = "";
-    ArrayList<RegistrationActivity.RegularProfile> users;
+    ArrayList<RegularRegistrationActivity.RegularProfile> users;
 
     public void onClick(View v)
     {
@@ -78,7 +78,7 @@ public class SearchActivity extends AppCompatActivity{
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                     Intent intent = new Intent(SearchActivity.this, RegularProfileActivity.class);
-                    RegistrationActivity.RegularProfile rp = users.get(i);
+                RegularRegistrationActivity.RegularProfile rp = users.get(i);
                     String serializedObject = "";
                     try {
                         ByteArrayOutputStream bo = new ByteArrayOutputStream();
@@ -100,7 +100,7 @@ public class SearchActivity extends AppCompatActivity{
 
                 for(DataSnapshot snap : dataSnapshot.getChildren())
                 {
-                    RegistrationActivity.RegularProfile RP = snap.getValue(RegistrationActivity.RegularProfile.class);
+                    RegularRegistrationActivity.RegularProfile RP = snap.getValue(RegularRegistrationActivity.RegularProfile.class);
                     if(RP.Address.contains(cityToSearch) && RP.FullName.contains(nameToSearch))
                     {
 //                        listItems.add(RP.toString());
