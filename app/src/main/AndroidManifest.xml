@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.NextDoor">
         <activity
+            android:name=".MayorActivity"
+            android:exported="false" />
+        <activity
             android:name=".BusinessRegistrationActivity"
             android:exported="false" />
         <activity

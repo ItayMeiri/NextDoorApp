@@ -18,6 +18,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -92,7 +97,7 @@ public class LoginActivity extends AppCompatActivity {
         }
         return true;
     }
-
+    public boolean mayor;
     private void Login(){
         String email = Email.getText().toString();
         String password = Password.getText().toString();
@@ -100,9 +105,39 @@ public class LoginActivity extends AppCompatActivity {
             myAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
+                    mayor = false;
                     if(task.isSuccessful()){
-                        Intent i = new Intent(LoginActivity.this,HomePageActivity.class);
-                        startActivity(i);
+                        FirebaseDatabase db = FirebaseDatabase.getInstance();
+                        DatabaseReference ref = db.getReference("mayors");
+                        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                for(DataSnapshot snap : snapshot.getChildren())
+                                {
+                                    System.out.println("snapkey: " + snap.getKey() + " uid: " + myAuth.getCurrentUser().getUid());
+                                    if(snap.getKey().equals(myAuth.getCurrentUser().getUid()))
+                                    {
+                                        //user is mayor
+                                        System.out.println("mayor found");
+                                        mayor = true;
+                                    }
+                                }
+                                if(mayor)
+                                {
+                                    Intent i = new Intent(LoginActivity.this,MayorActivity.class);
+                                    startActivity(i);
+                                }
+                                else{
+                                    Intent i = new Intent(LoginActivity.this,HomePageActivity.class);
+                                    startActivity(i);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
                     }
                     else {
                         Toast.makeText(LoginActivity.this,"Login failed",Toast.LENGTH_LONG).show();
