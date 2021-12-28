@@ -87,6 +87,8 @@ public class HomePageActivity extends AppCompatActivity implements PopupMenu.OnM
             }
         });
 
+        updateMayorMessage();
+
         menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -98,6 +100,28 @@ public class HomePageActivity extends AppCompatActivity implements PopupMenu.OnM
         });
 
         addNewMessageListener();
+    }
+
+    private void updateMayorMessage() {
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
+        DatabaseReference ref = db.getReference("mayors");
+
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot snap : snapshot.getChildren())
+                {
+                    Mayor mayor = snap.getValue(Mayor.class);
+                    TextView tv = findViewById(R.id.mayorMessage);
+                    tv.setText(tv.getText() + mayor.getLatest_post() + "\n");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     public static class Mayor{
@@ -146,7 +170,8 @@ public class HomePageActivity extends AppCompatActivity implements PopupMenu.OnM
     private void addNewMessageListener() {
         FirebaseDatabase data = FirebaseDatabase.getInstance();
         DatabaseReference ref = data.getReference("mayors");
-        //find my city
+        //find my city <-
+
         String myCity = "Ariel";
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "CHANNEL")
                 .setSmallIcon(R.drawable.message_get)
