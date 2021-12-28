@@ -187,4 +187,18 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/age_icon" />
 
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="22dp"
+        android:layout_height="17dp"
+        android:layout_marginEnd="12dp"
+        android:text="+"
+        android:textAlignment="center"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/Servive"
+        app:layout_constraintEnd_toEndOf="@+id/Servive"
+        app:layout_constraintTop_toTopOf="@+id/Servive"
+        app:layout_constraintVertical_bias="0.478" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

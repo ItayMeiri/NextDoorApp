@@ -24,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -32,11 +33,15 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -71,7 +76,7 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
         }
     }
 
-    public static class BusinessProfile {
+    public static class BusinessProfile implements Serializable {
 
         public String address;
         public String phone;
@@ -79,16 +84,18 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
         public List<String> serviceLang;
         public String activeTime;
         public String description;
+        public String imgurll;
 
         public BusinessProfile(){}
 
-        public BusinessProfile(String A, String P, String F, List<String> sL,String aT, String D){
+        public BusinessProfile(String A, String P, String F, List<String> sL,String aT, String D,String im){
             address=A;
             phone=P;
             fullName=F;
             serviceLang=sL;
             activeTime=aT;
             description=D;
+            imgurll=im;
         }
 
         @Override
@@ -121,6 +128,9 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
         public String getDescription() {
             return description;
         }
+        public String geturl (){
+            return imgurll;
+        }
 
     }
 
@@ -133,12 +143,18 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
     TextView Camera;
     TextView Gallery;
     ImageView Photo;
+    String imageUrll;
     Spinner Address;
+    TextView plus_Sl;
     ArrayAdapter<String> adapter;
     Button SignUp;
     TextView SignIn;
     FirebaseAuth myAuth;
     DatabaseReference databaseReference;
+    FirebaseStorage FbS;
+    StorageReference Sr;
+    FirebaseDatabase database;
+    ArrayList<String> emptylist3 = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,10 +173,18 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
         Photo = findViewById(R.id.imageView17);
         SignUp = findViewById(R.id.button2);
         SignIn = findViewById(R.id.textView2);
+        plus_Sl = findViewById(R.id.textView6);
         myAuth = FirebaseAuth.getInstance();
         Camera = findViewById(R.id.cameraphoto);
         Gallery = findViewById(R.id.PFG3);
+        imageUrll = "";
+        database = FirebaseDatabase.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference("/cities");
+        FbS = FirebaseStorage.getInstance();
+        Sr = FbS.getReference();
+        databaseReference = FirebaseDatabase.getInstance().getReference("/cities");
+        ArrayList<String> emptylist1 = new ArrayList<>();
+        emptylist3.add("");
 
 
         namesList nl = new namesList();
@@ -240,33 +264,57 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
                 choosePhotoFromGallery();
             }
         });
+
+        plus_Sl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addServiceLanguages();
+            }
+        });
     }
 
     public void takePicture(){
         Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(i,0);
+        startActivityForResult(i,1000);
     }
 
     public void choosePhotoFromGallery(){
         Intent i = new Intent(Intent.ACTION_PICK,MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(i,0);
+        startActivityForResult(i,1000);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        if (resultCode == RESULT_OK){
-            Uri targetUri = data.getData();
-            Bitmap bitmap;
-            try {
-                bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(targetUri));
-                Photo.setImageBitmap(bitmap);
-            } catch (FileNotFoundException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+        super.onActivityResult(requestCode, resultCode, data);
+        if (data.getData()!=null) {
+            Uri uri = data.getData();
+            Photo.setImageURI(uri);
+            uploadPicture(uri);
         }
+    }
+
+    public void uploadPicture(Uri uri){
+        final StorageReference reference = FbS.getReference().child("users").child(FirebaseAuth.getInstance().getUid());
+        reference.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                reference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        imageUrll = uri.toString();
+                        Intent i = new Intent(BusinessRegistrationActivity.this,BusinessProfileActivity.class);
+                        i.putExtra("Url_B",imageUrll);
+                        startActivity(i);
+                    }
+                });
+            }
+        });
+    }
+
+    public void addServiceLanguages(){
+        emptylist3.add(ServiceLang.getText().toString());
+        ServiceLang.getText().clear();
     }
 
     private boolean Validation(String email,String password, String fullName, String address, String phoneNumber){
@@ -296,7 +344,7 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
     private void addToDatabase(){
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference reference = database.getReference("users/Business");
-        BusinessProfile Rp = new BusinessProfile(Address.getSelectedItem().toString(), PhoneNumber.getText().toString(), FullName.getText().toString(), new ArrayList<String>(), ActivityTime.getText().toString(),Description.getText().toString());
+        BusinessProfile Rp = new BusinessProfile(Address.getSelectedItem().toString(), PhoneNumber.getText().toString(), FullName.getText().toString(), emptylist3, ActivityTime.getText().toString(),Description.getText().toString(),imageUrll);
 //        BusinessProfile Rp = new BusinessProfile("test", "p", "F", new ArrayList<>(), "aT", "D");
         reference.child(Objects.requireNonNull(myAuth.getUid())).setValue(Rp);
     }

@@ -14,6 +14,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.AttributeSet;
 import android.util.Patterns;
 import android.view.View;
 import android.view.ViewGroup;
@@ -157,6 +158,8 @@ public class RegularRegistrationActivity extends AppCompatActivity {
     TextView Gallery;
     ImageView Photo;
     String imageUrl;
+    TextView plus_L;
+    TextView plus_H;
     ArrayAdapter<String> adapter;
     Button SignUp;
     TextView SignIn;
@@ -164,7 +167,10 @@ public class RegularRegistrationActivity extends AppCompatActivity {
     DatabaseReference databaseReference;
     FirebaseStorage FbS;
     StorageReference Sr;
-    StorageReference Pr;
+    FirebaseDatabase database;
+    ArrayList<String> emptylist1 = new ArrayList<>();
+    ArrayList<String> emptylist2 = new ArrayList<>();
+
 
 
     @Override
@@ -188,18 +194,23 @@ public class RegularRegistrationActivity extends AppCompatActivity {
         SignUp = findViewById(R.id.button2);
         SignIn = findViewById(R.id.textView2);
         imageUrl = "";
+        plus_L = findViewById(R.id.textView4);
+        plus_H = findViewById(R.id.textView5);
+        database = FirebaseDatabase.getInstance();
         myAuth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference("/cities");
         FbS = FirebaseStorage.getInstance();
         Sr = FbS.getReference();
+        emptylist1.add("");
+        emptylist2.add("");
 
-        Pr = Sr.child("users/"+myAuth.getCurrentUser().getUid()+"/ProfileImage.jpg");
-        Pr.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
-                Picasso.get().load(uri).into(Photo);
-            }
-        });
+//        Pr = Sr.child("users/"+myAuth.getCurrentUser().getUid()+"/ProfileImage.jpg");
+//        Pr.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+//            @Override
+//            public void onSuccess(Uri uri) {
+//                Picasso.get().load(uri).into(Photo);
+//            }
+//        });
 
         namesList nl = new namesList();
         String [] items = nl.retrieveAsArray();
@@ -280,16 +291,32 @@ public class RegularRegistrationActivity extends AppCompatActivity {
             }
         });
 
+        plus_L.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addLanguages();
+            }
+        });
+
+        plus_H.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addHobbies();
+            }
+        });
     }
 
     private void takePicture(){
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         try {
-            startActivityForResult(takePictureIntent, 1);
+            startActivityForResult(takePictureIntent, 1000);
         } catch (ActivityNotFoundException e) {
             // display error state to the user
         }
     }
+
+
+
 
     public void choosePhotoFromGallery(){
         Intent i = new Intent(Intent.ACTION_PICK,MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -297,49 +324,51 @@ public class RegularRegistrationActivity extends AppCompatActivity {
     }
 
 
-    public Uri getImageUri(Context inContext, Bitmap inImage) {
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
-        return Uri.parse(path);
-    }
-//
+//    public Uri getImageUri(Context inContext, Bitmap inImage) {
+//        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+//        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+//        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+//        return Uri.parse(path);
+//    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK && requestCode == 1) {
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-            Uri imageId = getImageUri(this, imageBitmap);
-//            Uri imageId = data.getData();
-
-            uploadPicture(imageId);
+        if (data.getData()!=null) {
+            Uri uri = data.getData();
+            Photo.setImageURI(uri);
+            uploadPicture(uri);
         }
     }
 
     public void uploadPicture(Uri uri){
-        StorageReference reference = Sr.child("users/"+myAuth.getCurrentUser().getUid()+"/ProfileImage.jpg");
+        final StorageReference reference = FbS.getReference().child("users").child(FirebaseAuth.getInstance().getUid());
         reference.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                Task<Uri> downloadUri = taskSnapshot.getStorage().getDownloadUrl();
-                if(downloadUri.isSuccessful()) {
-                    imageUrl = downloadUri.getResult().toString();
-                }
                 reference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
-                        Picasso.get().load(uri).into(Photo);
+                        imageUrl = uri.toString();
+                        Intent i = new Intent(RegularRegistrationActivity.this,RegularProfileActivity.class);
+                        i.putExtra("Url",imageUrl);
+                        startActivity(i);
                     }
                 });
             }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(RegularRegistrationActivity.this,"failed",Toast.LENGTH_LONG).show();
-            }
         });
     }
+
+    public void addLanguages(){
+        emptylist1.add(Languages.getText().toString());
+        Languages.getText().clear();
+    }
+
+    public void addHobbies(){
+        emptylist1.add(Hobbies.getText().toString());
+        Hobbies.getText().clear();
+    }
+
 
     private boolean Validation(String email,String password, String fullName, String address, String phoneNumber){
         if (TextUtils.isEmpty(fullName)){
@@ -368,10 +397,6 @@ public class RegularRegistrationActivity extends AppCompatActivity {
     private void addToDatabase(){
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference reference = database.getReference("users/Regular");
-        ArrayList<String> emptylist1 = new ArrayList<>();
-        ArrayList<String> emptylist2 = new ArrayList<>();
-        emptylist1.add("");
-        emptylist2.add("");
         RegularProfile Rp = new RegularProfile(Address.getSelectedItem().toString(), PhoneNumber.getText().toString(),Age.getText().toString(), FullName.getText().toString(), Job.getText().toString(), emptylist1,emptylist2,imageUrl);
         reference.child(Objects.requireNonNull(myAuth.getUid())).setValue(Rp);
     }
