@@ -75,23 +75,6 @@ public class BusinessProfileActivity extends AppCompatActivity {
         for (String i : u.serviceLang)
             tv4.append(i+ " ");
         tv5.append(u.description);
-
-        FirebaseDatabase db = FirebaseDatabase.getInstance();
-        FirebaseAuth myA = FirebaseAuth.getInstance();
-
-        db.getReference().child("users").child(myA.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()){
-                    Picasso.get().load(url).into(Image);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
     }
 
     public void onClick(View v)

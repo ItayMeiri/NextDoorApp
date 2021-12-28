@@ -204,14 +204,6 @@ public class RegularRegistrationActivity extends AppCompatActivity {
         emptylist1.add("");
         emptylist2.add("");
 
-//        Pr = Sr.child("users/"+myAuth.getCurrentUser().getUid()+"/ProfileImage.jpg");
-//        Pr.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-//            @Override
-//            public void onSuccess(Uri uri) {
-//                Picasso.get().load(uri).into(Photo);
-//            }
-//        });
-
         namesList nl = new namesList();
         String [] items = nl.retrieveAsArray();
         databaseReference.child("cities").addValueEventListener(new ValueEventListener() {
@@ -315,9 +307,6 @@ public class RegularRegistrationActivity extends AppCompatActivity {
         }
     }
 
-
-
-
     public void choosePhotoFromGallery(){
         Intent i = new Intent(Intent.ACTION_PICK,MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(i,1000);
@@ -350,9 +339,6 @@ public class RegularRegistrationActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(Uri uri) {
                         imageUrl = uri.toString();
-                        Intent i = new Intent(RegularRegistrationActivity.this,RegularProfileActivity.class);
-                        i.putExtra("Url",imageUrl);
-                        startActivity(i);
                     }
                 });
             }
@@ -365,7 +351,7 @@ public class RegularRegistrationActivity extends AppCompatActivity {
     }
 
     public void addHobbies(){
-        emptylist1.add(Hobbies.getText().toString());
+        emptylist2.add(Hobbies.getText().toString());
         Hobbies.getText().clear();
     }
 

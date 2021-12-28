@@ -303,9 +303,6 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(Uri uri) {
                         imageUrll = uri.toString();
-                        Intent i = new Intent(BusinessRegistrationActivity.this,BusinessProfileActivity.class);
-                        i.putExtra("Url_B",imageUrll);
-                        startActivity(i);
                     }
                 });
             }
