@@ -85,23 +85,47 @@ public class SearchActivity extends AppCompatActivity{
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    Intent intent = new Intent(SearchActivity.this, RegularProfileActivity.class);
-                RegularRegistrationActivity.RegularProfile rp = users.get(i);
-                    String serializedObject = "";
-                    try {
-                        ByteArrayOutputStream bo = new ByteArrayOutputStream();
-                        ObjectOutputStream so = new ObjectOutputStream(bo);
-                        so.writeObject(rp);
-                        so.flush();
-                        serializedObject = new String(Base64.getEncoder().encode(bo.toByteArray()));
-                    } catch (Exception e) {
-                        System.out.println(e);
+                    if(type.equals("Regular"))
+                    {
+                        Intent intent = new Intent(SearchActivity.this, RegularProfileActivity.class);
+                        RegularRegistrationActivity.RegularProfile rp = users.get(i);
+                        String serializedObject = "";
+                        try {
+                            ByteArrayOutputStream bo = new ByteArrayOutputStream();
+                            ObjectOutputStream so = new ObjectOutputStream(bo);
+                            so.writeObject(rp);
+                            so.flush();
+                            serializedObject = new String(Base64.getEncoder().encode(bo.toByteArray()));
+                        } catch (Exception e) {
+                            System.out.println(e);
+                        }
+                        intent.putExtra("Object", serializedObject);
+                        intent.putExtra("Key", ids.get(i));
+                        intent.putExtra("Name",rp.getFullName());
+                        intent.putExtra("myName", myUserName);
+                        startActivity(intent);
                     }
-                    intent.putExtra("Object", serializedObject);
-                    intent.putExtra("Key", ids.get(i));
-                    intent.putExtra("Name",rp.getFullName());
-                    intent.putExtra("myName", myUserName);
-                    startActivity(intent);
+                    else{
+                        Intent intent = new Intent(SearchActivity.this, BusinessProfileActivity.class);
+
+                        BusinessRegistrationActivity.BusinessProfile rp = bUsers.get(i);
+                        String serializedObject = "";
+                        try {
+                            ByteArrayOutputStream bo = new ByteArrayOutputStream();
+                            ObjectOutputStream so = new ObjectOutputStream(bo);
+                            so.writeObject(rp);
+                            so.flush();
+                            serializedObject = new String(Base64.getEncoder().encode(bo.toByteArray()));
+                        } catch (Exception e) {
+                            System.out.println(e);
+                        }
+                        intent.putExtra("Object", serializedObject);
+                        intent.putExtra("Key", ids.get(i));
+                        intent.putExtra("Name",rp.getFullName());
+                        intent.putExtra("myName", myUserName);
+                        startActivity(intent);
+                    }
+
                 }
         });
         ValueEventListener postListener = new ValueEventListener() {
