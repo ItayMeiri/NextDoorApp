@@ -22,6 +22,7 @@ import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -35,9 +36,12 @@ public class HomePageActivity extends AppCompatActivity implements PopupMenu.OnM
     Button menu;
     Spinner sp;
     ArrayAdapter<String> adapter;
-    String userType;
     String latest_post = "";
     NotificationManagerCompat notificationManager;
+    FirebaseDatabase data;
+    DatabaseReference reference;
+    FirebaseAuth Auth;
+
 
 
     @Override
@@ -49,6 +53,9 @@ public class HomePageActivity extends AppCompatActivity implements PopupMenu.OnM
         search = findViewById(R.id.search);
         menu = findViewById(R.id.button3);
         sp = findViewById(R.id.spinner);
+        data = FirebaseDatabase.getInstance();
+        reference = data.getReference();
+        Auth = FirebaseAuth.getInstance();
 
         String [] items = new String[]{"Language","English","French","Hebrew"};
         adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item,items){
@@ -231,9 +238,24 @@ public class HomePageActivity extends AppCompatActivity implements PopupMenu.OnM
     public boolean onMenuItemClick(MenuItem menuItem) {
         switch (menuItem.getItemId()){
             case R.id.myprofile:
-                Intent i;
-                i = new Intent(HomePageActivity.this, EditRegularProfileActivity.class);
-                startActivity(i);
+                reference.child("users").child("Regular").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        Intent i;
+                        if (snapshot.hasChild(Auth.getUid())){
+                            i = new Intent(HomePageActivity.this, EditRegularProfileActivity.class);
+                            startActivity(i);
+                        }
+                        else {
+                            i = new Intent(HomePageActivity.this, EditBusinessProfileActivity.class);
+                            startActivity(i);
+                        }
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
                 break;
             case R.id.settings:
                 Intent j = new Intent(HomePageActivity.this,SettingsActivity.class);
