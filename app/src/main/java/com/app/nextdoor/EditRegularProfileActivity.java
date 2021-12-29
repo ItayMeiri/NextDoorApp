@@ -25,6 +25,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -38,9 +39,14 @@ public class EditRegularProfileActivity extends AppCompatActivity {
     EditText phone;
     EditText languages;
     EditText Hobbies;
+    TextView plus_l;
+    TextView plus_h;
     FirebaseDatabase database;
     DatabaseReference reference;
     FirebaseAuth myA;
+    ArrayList lang = new ArrayList();
+    ArrayList hobbies = new ArrayList();
+    HashMap hm = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,11 +64,14 @@ public class EditRegularProfileActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         reference = database.getReference();
         myA = FirebaseAuth.getInstance();
+        lang.add("");
+        hobbies.add("");
+        plus_l = findViewById(R.id.textView15);
+        plus_h = findViewById(R.id.textView16);
 
         update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                HashMap hm = new HashMap<>();
 
                 if (!name.getText().toString().equals("")){
                     hm.put("fullName",name.getText().toString());
@@ -79,15 +88,41 @@ public class EditRegularProfileActivity extends AppCompatActivity {
                 if (!phone.getText().toString().equals("")){
                     hm.put("phone",phone.getText().toString());
                 }
-                if (!languages.getText().toString().equals("")){
-                    hm.put("lang",languages.getText().toString());
-                }
-                if (!Hobbies.getText().toString().equals("")){
-                    hm.put("hobbies",Hobbies.getText().toString());
-                }
                 reference.child("users").child("Regular").child(myA.getUid()).updateChildren(hm);
             }
         });
 
+        plus_l.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!languages.getText().toString().equals("")){
+                    addlang();
+                }
+            }
+        });
+
+        plus_h.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!Hobbies.getText().toString().equals("")){
+                    addhobi();
+                }
+
+            }
+        });
+
     }
+
+    public void addlang(){
+        lang.add(languages.getText().toString());
+        languages.getText().clear();
+        hm.put("lang",lang);
+    }
+
+    public void addhobi(){
+        hobbies.add(Hobbies.getText().toString());
+        Hobbies.getText().clear();
+        hm.put("hobbies",hobbies);
+    }
+
 }
