@@ -374,7 +374,7 @@ public class RegularRegistrationActivity extends AppCompatActivity {
     }
 
     public void addHobbies(){
-        emptylist1.add(Hobbies.getText().toString());
+        emptylist2.add(Hobbies.getText().toString());
         Hobbies.getText().clear();
     }
 
