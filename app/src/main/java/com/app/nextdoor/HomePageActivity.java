@@ -232,12 +232,7 @@ public class HomePageActivity extends AppCompatActivity implements PopupMenu.OnM
         switch (menuItem.getItemId()){
             case R.id.myprofile:
                 Intent i;
-                if (userType.equals("Regular")){
-                    i = new Intent(HomePageActivity.this, EditRegularProfileActivity.class);
-                }
-                else {
-                    i = new Intent(HomePageActivity.this, EditBusinessProfileActivity.class);
-                }
+                i = new Intent(HomePageActivity.this, EditRegularProfileActivity.class);
                 startActivity(i);
                 break;
             case R.id.settings:

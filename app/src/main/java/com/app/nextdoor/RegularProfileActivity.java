@@ -10,7 +10,9 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import java.io.ByteArrayInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -37,8 +39,6 @@ public class RegularProfileActivity extends AppCompatActivity {
     String receiverName;
     String url;
     ImageView Image;
-    FirebaseDatabase database;
-    DatabaseReference ref;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,10 +50,11 @@ public class RegularProfileActivity extends AppCompatActivity {
             token = extras.getString("Key");
             senderName = extras.getString("myName");
             receiverName = extras.getString("Name");
-            url = extras.getString("Url");
         }
 
         Image = findViewById(R.id.imageView6);
+        Image.setImageURI(Uri.parse(u.imgurl));
+
     }
 
     private void createProfile(String object) {
@@ -86,7 +87,6 @@ public class RegularProfileActivity extends AppCompatActivity {
             tv6.append(i+ " ");
         for (String i : u.hobbies)
             tv7.append(i+ " ");
-
     }
 
     public void onClick(View v)

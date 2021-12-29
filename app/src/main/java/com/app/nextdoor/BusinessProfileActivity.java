@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -41,10 +42,12 @@ public class BusinessProfileActivity extends AppCompatActivity {
             token = extras.getString("Key");
             senderName = extras.getString("myName");
             receiverName = extras.getString("Name");
-            url = extras.getString("Url");
         }
 
         Image = findViewById(R.id.imageView6);
+
+        Image = findViewById(R.id.imageView6);
+        Image.setImageURI(Uri.parse(u.imgurll));
 
     }
 

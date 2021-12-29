@@ -301,7 +301,7 @@ public class RegularRegistrationActivity extends AppCompatActivity {
     private void takePicture(){
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         try {
-            startActivityForResult(takePictureIntent, 1000);
+            startActivityForResult(takePictureIntent, 100);
         } catch (ActivityNotFoundException e) {
             // display error state to the user
         }
@@ -312,7 +312,7 @@ public class RegularRegistrationActivity extends AppCompatActivity {
         startActivityForResult(i,1000);
     }
 
-
+//
 //    public Uri getImageUri(Context inContext, Bitmap inImage) {
 //        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
 //        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
@@ -323,10 +323,17 @@ public class RegularRegistrationActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (data.getData()!=null) {
+        if (requestCode == 100 && resultCode == RESULT_OK) {
             Uri uri = data.getData();
             Photo.setImageURI(uri);
             uploadPicture(uri);
+        }
+        else {
+            if (data.getData()!=null) {
+                Uri uri = data.getData();
+                Photo.setImageURI(uri);
+                uploadPicture(uri);
+            }
         }
     }
 
