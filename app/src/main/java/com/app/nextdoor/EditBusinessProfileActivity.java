@@ -36,7 +36,6 @@ public class EditBusinessProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_business_profile);
-
         update = findViewById(R.id.button7);
         fullName = findViewById(R.id.editTextTextPersonName13);
         address = findViewById(R.id.editTextTextPersonName6);

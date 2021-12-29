@@ -300,20 +300,20 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
         return Uri.parse(path);
     }
 
+    private Uri uri;
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode == IMAGE_CAPTURE)
         {
-            Uri uri_pls = getImageUri(this, (Bitmap)data.getExtras().get("data"));
-            Photo.setImageURI(uri_pls);
-            uploadPicture(uri_pls);
+            uri = getImageUri(this, (Bitmap)data.getExtras().get("data"));
+            Photo.setImageURI(uri);
+
         }
         else{
-            Uri uri = data.getData();
+            uri = data.getData();
             Photo.setImageURI(uri);
-            uploadPicture(uri);
         }
     }
 
@@ -367,6 +367,7 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
         BusinessProfile Rp = new BusinessProfile(Address.getSelectedItem().toString(), PhoneNumber.getText().toString(), FullName.getText().toString(), emptylist3, ActivityTime.getText().toString(),Description.getText().toString(),imageUrll);
 //        BusinessProfile Rp = new BusinessProfile("test", "p", "F", new ArrayList<>(), "aT", "D");
         reference.child(Objects.requireNonNull(myAuth.getUid())).setValue(Rp);
+        uploadPicture(uri);
     }
 
     private void Register(){
