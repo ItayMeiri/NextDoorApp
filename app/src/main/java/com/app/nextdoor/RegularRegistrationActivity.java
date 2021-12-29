@@ -351,6 +351,9 @@ public class RegularRegistrationActivity extends AppCompatActivity {
     }
 
     public void uploadPicture(Uri uri){
+        if(uri == null){
+            return;
+        }
         final StorageReference reference = FbS.getReference().child("users").child(FirebaseAuth.getInstance().getUid());
         reference.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
