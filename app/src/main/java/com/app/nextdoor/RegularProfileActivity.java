@@ -63,7 +63,7 @@ public class RegularProfileActivity extends AppCompatActivity {
         A = FirebaseAuth.getInstance();
         storage = FirebaseStorage.getInstance();
         Image = findViewById(R.id.imageView6);
-        reference = storage.getReference("users").child(A.getUid());
+        reference = storage.getReference("users/" + A.getCurrentUser().getUid());
         try {
             File file = File.createTempFile("images","jpg");
             reference.getFile(file).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
