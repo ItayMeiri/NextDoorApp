@@ -335,21 +335,21 @@ public class RegularRegistrationActivity extends AppCompatActivity {
         String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
         return Uri.parse(path);
     }
+    private Uri uri;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         if(requestCode == IMAGE_CAPTURE)
         {
-            Uri uri_pls = getImageUri(this, (Bitmap)data.getExtras().get("data"));
-            Photo.setImageURI(uri_pls);
-            uploadPicture(uri_pls);
+            uri = getImageUri(this, (Bitmap)data.getExtras().get("data"));
+            Photo.setImageURI(uri);
+//            uploadPicture(uri);
         }
         else{
-            Uri uri = data.getData();
+            uri = data.getData();
             Photo.setImageURI(uri);
-            uploadPicture(uri);
+//            uploadPicture(uri);
         }
     }
 
@@ -408,6 +408,7 @@ public class RegularRegistrationActivity extends AppCompatActivity {
         DatabaseReference reference = database.getReference("users/Regular");
         RegularProfile Rp = new RegularProfile(Address.getSelectedItem().toString(), PhoneNumber.getText().toString(),Age.getText().toString(), FullName.getText().toString(), Job.getText().toString(), emptylist1,emptylist2,imageUrl);
         reference.child(Objects.requireNonNull(myAuth.getUid())).setValue(Rp);
+        uploadPicture(uri);
     }
 
     private void Register(){
