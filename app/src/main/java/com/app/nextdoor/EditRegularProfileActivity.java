@@ -34,6 +34,10 @@ public class EditRegularProfileActivity extends AppCompatActivity {
     EditText name;
     EditText job;
     EditText age;
+    EditText address;
+    EditText phone;
+    EditText languages;
+    EditText Hobbies;
     FirebaseDatabase database;
     DatabaseReference reference;
     FirebaseAuth myA;
@@ -45,8 +49,12 @@ public class EditRegularProfileActivity extends AppCompatActivity {
 
         update = findViewById(R.id.button4);
         name = findViewById(R.id.editTextTextPersonName);
-        job = findViewById(R.id.editTextTextPersonName2);
+        address = findViewById(R.id.editTextTextPersonName2);
         age = findViewById(R.id.editTextTextPersonName3);
+        phone = findViewById(R.id.editTextTextPersonName4);
+        job = findViewById(R.id.editTextTextPersonName5);
+        languages = findViewById(R.id.editText);
+        Hobbies = findViewById(R.id.editText2);
         database = FirebaseDatabase.getInstance();
         reference = database.getReference();
         myA = FirebaseAuth.getInstance();
@@ -55,17 +63,28 @@ public class EditRegularProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 HashMap hm = new HashMap<>();
-                hm.put("fullName",name.getText().toString());
-                hm.put("fullName",name.getText().toString());
-                hm.put("fullName",name.getText().toString());
-                hm.put("fullName",name.getText().toString());
-                hm.put("fullName",name.getText().toString());
-                hm.put("fullName",name.getText().toString());
-                reference.child("users").child("Regular").child(myA.getUid()).updateChildren(hm);
-                reference.child("users").child("Regular").child(myA.getUid()).updateChildren(hm);
-                reference.child("users").child("Regular").child(myA.getUid()).updateChildren(hm);
-                reference.child("users").child("Regular").child(myA.getUid()).updateChildren(hm);
-                reference.child("users").child("Regular").child(myA.getUid()).updateChildren(hm);
+
+                if (!name.getText().toString().equals("")){
+                    hm.put("fullName",name.getText().toString());
+                }
+                if (!address.getText().toString().equals("")){
+                    hm.put("address",address.getText().toString());
+                }
+                if (!age.getText().toString().equals("")){
+                    hm.put("age",age.getText().toString());
+                }
+                if (!job.getText().toString().equals("")){
+                    hm.put("job",job.getText().toString());
+                }
+                if (!phone.getText().toString().equals("")){
+                    hm.put("phone",phone.getText().toString());
+                }
+                if (!languages.getText().toString().equals("")){
+                    hm.put("lang",languages.getText().toString());
+                }
+                if (!Hobbies.getText().toString().equals("")){
+                    hm.put("hobbies",Hobbies.getText().toString());
+                }
                 reference.child("users").child("Regular").child(myA.getUid()).updateChildren(hm);
             }
         });
