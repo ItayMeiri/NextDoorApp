@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,12 +23,16 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
 public class RegularProfileActivity extends AppCompatActivity {
@@ -37,8 +42,11 @@ public class RegularProfileActivity extends AppCompatActivity {
     String token;
     String senderName;
     String receiverName;
-    String url;
     ImageView Image;
+    FirebaseStorage storage;
+    StorageReference reference;
+    FirebaseAuth A;
+
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,9 +60,24 @@ public class RegularProfileActivity extends AppCompatActivity {
             receiverName = extras.getString("Name");
         }
 
+        A = FirebaseAuth.getInstance();
+        storage = FirebaseStorage.getInstance();
         Image = findViewById(R.id.imageView6);
-        Image.setImageURI(Uri.parse(u.imgurl));
+        reference = storage.getReference("users").child(A.getUid());
+        try {
+            File file = File.createTempFile("images","jpg");
+            reference.getFile(file).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                    Image.setImageURI(Uri.fromFile(file));
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
+
+        System.out.println("hii");
     }
 
     private void createProfile(String object) {
@@ -100,8 +123,6 @@ public class RegularProfileActivity extends AppCompatActivity {
         i.putExtra("token", token);
 //        setContentView(R.layout.chat_layout);
         startActivity(i);
-
-
     }
 
 }
