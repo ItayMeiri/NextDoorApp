@@ -30,22 +30,22 @@ import java.util.Objects;
 
 public class EditRegularProfileActivity extends AppCompatActivity {
 
-    Button update;
-    EditText name;
-    EditText job;
-    EditText age;
-    EditText address;
-    EditText phone;
-    EditText languages;
-    EditText Hobbies;
-    FirebaseDatabase database;
-    DatabaseReference reference;
-    FirebaseAuth myA;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_regular_profile);
+        Button update;
+        EditText name;
+        EditText job;
+        EditText age;
+        EditText address;
+        EditText phone;
+        EditText languages;
+        EditText Hobbies;
+        FirebaseDatabase database;
+        DatabaseReference reference;
+        FirebaseAuth myA;
 
         update = findViewById(R.id.button4);
         name = findViewById(R.id.editTextTextPersonName);
