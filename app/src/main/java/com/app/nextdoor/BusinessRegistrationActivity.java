@@ -3,6 +3,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -38,6 +39,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -48,6 +50,8 @@ import java.util.Objects;
 
 
 public class BusinessRegistrationActivity extends AppCompatActivity {
+
+    private static final int IMAGE_CAPTURE = 1;
 
     public class namesList {
         public ArrayList<String> citiesList;
@@ -273,21 +277,40 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
         });
     }
 
-    public void takePicture(){
-        Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(i,1000);
+    private static final int TAKE_PICTURE = 1;
+    private Uri imageUri;
+
+    public void takePicture() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(intent, TAKE_PICTURE);
+
     }
+
 
     public void choosePhotoFromGallery(){
         Intent i = new Intent(Intent.ACTION_PICK,MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(i,1000);
     }
 
+
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        super.onActivityResult(requestCode, resultCode, data);
-        if (data.getData()!=null) {
+
+        if(requestCode == IMAGE_CAPTURE)
+        {
+            Uri uri_pls = getImageUri(this, (Bitmap)data.getExtras().get("data"));
+            Photo.setImageURI(uri_pls);
+            uploadPicture(uri_pls);
+        }
+        else{
             Uri uri = data.getData();
             Photo.setImageURI(uri);
             uploadPicture(uri);
