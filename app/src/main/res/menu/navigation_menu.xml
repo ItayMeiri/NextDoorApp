@@ -3,7 +3,7 @@
 
     <item
         android:id="@+id/myprofile"
-        android:title="My profile"/>
+        android:title="Edit profile"/>
 
     <item
         android:id="@+id/settings"
