@@ -263,6 +263,7 @@ public class HomePageActivity extends AppCompatActivity implements PopupMenu.OnM
                 break;
             case R.id.logOut:
                 Intent k = new Intent(HomePageActivity.this,LoginActivity.class);
+                FirebaseAuth.getInstance().signOut();
                 startActivity(k);
                 break;
         }
