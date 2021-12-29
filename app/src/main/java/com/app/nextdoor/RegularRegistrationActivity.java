@@ -12,6 +12,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -44,6 +45,7 @@ import com.squareup.picasso.Picasso;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -56,6 +58,8 @@ import java.util.UUID;
 
 
 public class RegularRegistrationActivity extends AppCompatActivity {
+
+    private static final int IMAGE_CAPTURE = 1;
 
     public class namesList {
         public ArrayList<String> citiesList;
@@ -204,6 +208,14 @@ public class RegularRegistrationActivity extends AppCompatActivity {
         emptylist1.add("");
         emptylist2.add("");
 
+//        Pr = Sr.child("users/"+myAuth.getCurrentUser().getUid()+"/ProfileImage.jpg");
+//        Pr.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+//            @Override
+//            public void onSuccess(Uri uri) {
+//                Picasso.get().load(uri).into(Photo);
+//            }
+//        });
+
         namesList nl = new namesList();
         String [] items = nl.retrieveAsArray();
         databaseReference.child("cities").addValueEventListener(new ValueEventListener() {
@@ -298,42 +310,46 @@ public class RegularRegistrationActivity extends AppCompatActivity {
         });
     }
 
-    private void takePicture(){
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        try {
-            startActivityForResult(takePictureIntent, 100);
-        } catch (ActivityNotFoundException e) {
-            // display error state to the user
-        }
+    private static final int TAKE_PICTURE = 1;
+    private Uri imageUri;
+
+    public void takePicture() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(intent, TAKE_PICTURE);
+
     }
+
+
+
+
 
     public void choosePhotoFromGallery(){
         Intent i = new Intent(Intent.ACTION_PICK,MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(i,1000);
     }
 
-//
-//    public Uri getImageUri(Context inContext, Bitmap inImage) {
-//        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-//        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-//        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
-//        return Uri.parse(path);
-//    }
+
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 100 && resultCode == RESULT_OK) {
+
+        if(requestCode == IMAGE_CAPTURE)
+        {
+            Uri uri_pls = getImageUri(this, (Bitmap)data.getExtras().get("data"));
+            Photo.setImageURI(uri_pls);
+            uploadPicture(uri_pls);
+        }
+        else{
             Uri uri = data.getData();
             Photo.setImageURI(uri);
             uploadPicture(uri);
-        }
-        else {
-            if (data.getData()!=null) {
-                Uri uri = data.getData();
-                Photo.setImageURI(uri);
-                uploadPicture(uri);
-            }
         }
     }
 
@@ -358,7 +374,7 @@ public class RegularRegistrationActivity extends AppCompatActivity {
     }
 
     public void addHobbies(){
-        emptylist2.add(Hobbies.getText().toString());
+        emptylist1.add(Hobbies.getText().toString());
         Hobbies.getText().clear();
     }
 
