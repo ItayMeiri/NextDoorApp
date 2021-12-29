@@ -41,7 +41,6 @@ public class EditBusinessProfileActivity extends AppCompatActivity {
         EditText description;
         EditText serviceLang;
         EditText url;
-        EditText imageurll;
         FirebaseDatabase database;
         DatabaseReference reference;
         FirebaseAuth myA;
